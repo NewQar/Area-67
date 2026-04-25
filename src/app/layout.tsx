@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'AIDa — Pembantu Bantuan Anda',
+  title: 'AIDa — Aid Intelligent & Discovery Assistant',
   description:
     'AIDa membantu rakyat Malaysia menemui bantuan kerajaan, zakat dan kewangan yang anda layak terima.',
   manifest: '/manifest.json',

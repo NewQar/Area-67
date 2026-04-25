@@ -16,7 +16,7 @@ AIDa (Aid Intelligence & Discovery Assistant) is a PWA (Progressive Web App) tha
 | Layer | Technology | Notes |
 |-------|-----------|-------|
 | Frontend | Next.js 14 (App Router) + TypeScript | Installable PWA via `public/manifest.json` (next-pwa was dropped — see Setup Notes) |
-| Styling | Tailwind CSS | Mobile-first, large text, high contrast |
+| Styling | Tailwind CSS | Mobile-first, standard text sizing (see Design Principles), high contrast |
 | Backend | Next.js API Routes | Keep it simple, no separate BE needed |
 | Database | PostgreSQL via Prisma ORM | Hosted on AWS RDS. Schema + seed exist; demo flow does not actually hit the DB at runtime (localStorage-only). |
 | AI Matching | Google Gemini API (`gemini-flash-latest`, paid tier) | For aid matching and gap analysis. Free tier capped us at 20 RPD which we burned through in testing — switched to paid (MYR 40 prepaid credit on the Default Gemini Project as of 2026-04-25). Realistic demo cost is ~$0.01 per full session. |
@@ -40,87 +40,109 @@ Area-67/
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx         ← Root layout (PWA meta, fonts)
-│   │   ├── page.tsx           ← Landing / entry point
+│   │   ├── page.tsx           ← Splash (auto-advance ~1.5s → /welcome or /dashboard)
+│   │   ├── welcome/
+│   │   │   └── page.tsx       ← Pre-onboarding landing with "Mula Sekarang" CTA
 │   │   ├── onboarding/
-│   │   │   └── page.tsx       ← 3-step onboarding form
-│   │   ├── dashboard/
-│   │   │   └── page.tsx       ← Aid matching results
+│   │   │   └── page.tsx       ← Per-question wizard (eKYC scan path or manual fallback)
+│   │   ├── (app)/             ← Route group: shared bottom nav + chat FAB
+│   │   │   ├── layout.tsx     ← Renders BottomNav + ChatFab around the 4 tab pages
+│   │   │   ├── dashboard/     ← Home tab — total RM hero + 2-col AidCard grid
+│   │   │   ├── aids/          ← Bantuan tab — full catalog browse w/ search + categories
+│   │   │   ├── insights/      ← Insights tab — mock TnG wallet + AI advice + spending
+│   │   │   └── profile/       ← Profil tab — profile fields, language toggle, reset
+│   │   ├── aids/[id]/
+│   │   │   └── page.tsx       ← Aid detail view (outside (app) — back bar, no bottom nav)
 │   │   ├── chat/
-│   │   │   └── page.tsx       ← AIDa chatbot screen
+│   │   │   └── page.tsx       ← AIDa chatbot screen (outside (app))
 │   │   └── api/
-│   │       ├── match/
-│   │       │   └── route.ts   ← Gemini aid matching endpoint
-│   │       └── chat/
-│   │           └── route.ts   ← Gemini chatbot endpoint
+│   │       ├── match/route.ts ← Gemini aid matching endpoint
+│   │       └── chat/route.ts  ← Gemini chatbot endpoint
 │   ├── components/
-│   │   ├── OnboardingForm.tsx ← 3-step form: name+lang / age+gender+state+household+children / religion+income
-│   │   ├── AidCard.tsx        ← Localized name; eligible/auto/partial states; inline gap CTA on partial
+│   │   ├── OnboardingForm.tsx ← Phase-based wizard (language → MyKad scan/manual → household → children → income)
+│   │   ├── MyKadMock.tsx      ← Inline-SVG MyKad card with scan-line animation (no binary asset)
+│   │   ├── AidCard.tsx        ← Compact 2-col card + ProviderLogo helper (logo / name / amount / status pill)
+│   │   ├── BottomNav.tsx      ← 4-tab fixed nav (Home / Bantuan / Insights / Profil)
+│   │   ├── ChatFab.tsx        ← Floating chat button (bottom-right, above nav)
 │   │   └── ChatInterface.tsx
 │   ├── lib/
 │   │   ├── gemini.ts          ← Gemini client + system prompts + deterministic fallback matcher
+│   │   ├── logo.ts            ← Aid id → provider PNG path map
 │   │   ├── types.ts           ← Aid, UserProfile, MatchedAid (status: eligible|auto|partial)
 │   │   └── db.ts              ← Prisma client singleton (seed-only for demo)
 │   └── data/
-│       └── aids.json          ← 15 aids in BA1 schema — copied from research/, read by /api/match
+│       └── aids.json          ← 15 aids in BA1 schema — display fields translated to BM (see Seed Data)
 └── public/
     ├── manifest.json          ← PWA manifest
-    └── icons/                 ← App icons (192/512 PNGs to be added)
+    ├── icons/                 ← App icons (192/512 PNGs to be added)
+    └── logo/                  ← Provider logos referenced by src/lib/logo.ts
 ```
 
+**Route map at a glance:**
+- `/` splash → `/welcome` (no profile) or `/dashboard` (has profile)
+- `/onboarding` standalone wizard — no nav chrome
+- `/dashboard`, `/aids`, `/insights`, `/profile` — share `(app)` layout with bottom nav + chat FAB
+- `/aids/[id]` detail — no nav chrome, sticky "Mohon Sekarang" bar at bottom
+- `/chat` — full-screen chat, no nav chrome
+
 ---
 
-## Core Features to Build (Priority Order)
+## Core Features (built — current shape)
 
-### 1. Onboarding Form (HIGHEST PRIORITY)
-- 3 steps, focused topics per screen
-- **Step 1**: Name (text) + Language (BM / EN / 中文 / தமிழ்)
-- **Step 2**: Age (stepper) + Gender (Lelaki / Perempuan radio) + State (dropdown, defaults to Selangor for the Aminah persona) + Household size (stepper) + Number of children under 18 (stepper)
-- **Step 3**: Religion (Islam / Bukan Islam radio with helper text "Untuk semak kelayakan bantuan zakat") + Monthly income (5 large button buckets)
-- Progress bar at top
-- Large 18px+ text, big tap targets (min 48px height buttons)
-- "Seterusnya" (Next) button — not "Submit" or "Continue"
-- Store in localStorage only as `aida.profile` (no auth, no DB write — see "What NOT to build")
+### 1. Onboarding (per-question wizard with eKYC mock)
+- Phase-based state machine in [src/components/OnboardingForm.tsx](src/components/OnboardingForm.tsx). One question per screen with a `history` stack for back navigation.
+- **Path A — eKYC scan (default):** language → "Imbas MyKad" entry (tappable [MyKadMock.tsx](src/components/MyKadMock.tsx) — inline-SVG card with scan-line animation, no binary asset) → 2s `mykad-scanning` overlay → `mykad-confirm` step pre-fills name/age/gender/state/religion from a hard-coded mock (Aminah persona — see Demo Script). User can edit any field on the confirm screen. The `mykad-scanning` phase is intentionally **excluded from history** so back from confirm returns to the entry screen, not the loop.
+- **Path B — manual fallback:** "Isi sendiri tanpa MyKad" link on the entry screen routes through 5 single-question screens (name → age → gender → state → religion).
+- **Both paths converge** on: household size → # children under 18 → monthly income (5 button buckets) → `localStorage["aida.profile"]` → `/dashboard`.
 - Why these specific fields: gender unlocks BIB maternal aid, religion unlocks the 4 zakat aids, numChildren drives STR + BKM tier amounts. Skipped from onboarding (kept as defaults): `ekasihRegistered`, `isStrRecipient`, `employmentType` — those let aids stay as `partial` with a "1-step away" fix CTA, which IS the demo's wow moment.
 
-### 2. Aid Matching Screen (HIGHEST PRIORITY)
-- Show all matched aid cards (Aminah-like persona returns ~9). Sort: `auto` first, then `eligible`, then `partial`.
-- Each card carries one of three **statuses**:
-  - **`eligible`** — green, "Mohon Sekarang →" button to `application.online_url`
-  - **`auto`** — green with ⚡ "Auto — tiada permohonan" badge, button reads "Lihat butiran →". Signals instant value (SARA, MySalam, BPEN, SARA Untuk Semua)
-  - **`partial`** — yellow border, inline "Apa yang kurang?" gap panel + estimated days + "Daftar dahulu →" CTA pointing at the prerequisite registration's URL (eKasih / STR / asnaf registration)
-- Localized name: card pulls `aid.name[profile.language]`, falls back to `ms`. Amount headline: `RM{min_myr}–RM{max_myr}`, with `aid.amount.description` (BA's prose) below.
-- Hard near-miss section ("Hampir layak"): aids that fail income/state/religion/age/gender — surfaced separately with the gap message but no fix CTA (those gaps aren't actionable).
-- Total potential value chip at top: sum of `max_myr` across matched. With cache-warming this is the demo's headline number.
-- Result is cached in localStorage as `aida.match` so navigation back to dashboard is instant.
-- This is the WOW moment — make it feel magical.
+### 2. Home / Aid Matching (`/dashboard`)
+- Top: greeting + green gradient hero with summed `max_myr` total ("Anggaran nilai bantuan").
+- Body: two `grid grid-cols-2 gap-3` sections — **"Untuk anda"** (matched) and **"Hampir layak"** (near-miss). Both render the same compact `AidCard` (provider logo, aid name 2-line clamp, status pill, RM amount). Reason / gap text is **not shown on the card** — tap to drill into `/aids/[id]` for the full detail.
+- Match status pill (top-right of card): `✓ Layak` (eligible/green), `⚡ Auto` (auto-credit/green), `⚠ Hampir` (partial/yellow). Sort still `auto` → `eligible` → `partial`.
+- Result cached in `localStorage["aida.match"]` — re-renders instantly on tab switch and powers `/insights` + `/aids/[id]` reasons.
+- Aminah persona returns ~9 matched + 5 near-miss; that's the calibration target.
 
-### 3. AIDa Chatbot (HIGH PRIORITY)
-- WhatsApp-style bubble UI (green bubbles for AIDa, white for user)
-- Suggested quick-reply chips below input: "Apa itu BSH?", "Macam mana nak mohon?", "Bila duit masuk?"
-- Multilingual — detect language from onboarding preference
-- AIDa avatar: simple icon, friendly name
-- Powered by Gemini API (`gemini-flash-latest`) with a system prompt that knows the user's profile and matched aids
+### 3. Aid detail (`/aids/[id]`)
+- Outside the `(app)` layout — has its own back bar, no bottom nav, sticky bottom CTA ("Mohon Sekarang →" / "Daftar dahulu →" for partials / "Lihat butiran →" for auto).
+- Header carries the provider logo (lg) + aid name. Sections: amount hero card, "Mengapa anda layak" (matched) or "Apa yang kurang" (near-miss), tier breakdown, eligibility criteria (`citizenship: "malaysian"` is mapped to "Warganegara Malaysia" at render time), required documents, application steps, offline options.
 
-### 4. Aid Tracker (MEDIUM — demo slide only if no time)
-- Simple list: Applied / Eligible-not-applied / Upcoming renewal
-- Can be mocked with static data for demo
+### 4. Aids browse (`/aids`)
+- All catalog aids in a 2-col `AidCard` grid with text search (matches localized name + provider) and a horizontal category chip filter ("Semua / Tunai / Baucar / Zakat / …"). Status pills inherit the matched/near-miss state from cached `aida.match`.
+
+### 5. AIDa Chatbot
+- WhatsApp-style bubbles (green for AIDa, white for user), quick-reply chip suggestions, multilingual (uses `profile.language`).
+- **Entry: floating chat FAB** (`<ChatFab>` in the `(app)` layout — bottom-right, above the bottom nav). Visible on all four tab routes; the `/chat` page itself sits outside `(app)` so the FAB doesn't appear there. Replaces the old full-width "Sembang dengan AIDa" bar.
+- Powered by Gemini (`gemini-flash-latest`) via `buildAidaSystemPrompt` — see Aid Matching Logic / Chatbot sections below.
+
+### 6. Insights tab (`/insights`) — TnG wallet narrative
+- Replaces the "Aid Tracker" idea from earlier scope. Demo angle: aids credited into a Touch 'n Go eWallet, AI reads the (mocked) spending data and gives financial advice.
+- Hero: blue TnG wallet card with mocked balance derived from matched aid amounts.
+- "Cadangan AIDa" — 3 hard-coded advice cards (win / tip / warn tones). All mocked, no LLM call.
+- "Corak perbelanjaan" — static stacked-bar breakdown (groceries / utilities / transport / health / other). Marked as simulated at the bottom of the page.
+
+### 7. Profile tab (`/profile`)
+- Reads `aida.profile` from localStorage. Shows demographic summary, language switcher (writes back to `aida.profile`), settings list (Notifikasi / Privasi / Tentang AIDa — display only), and a destructive "Padam profil & mula semula" that clears `aida.profile` + `aida.match` and routes to `/welcome`.
+
+### 8. Splash (`/`)
+- Static logo + tagline + spinner on a green background, auto-advances after 1500ms. Routes to `/dashboard` if a profile exists, else `/welcome`. Shown every launch (no first-launch flag).
 
 ---
 
-## Design Principles (NON-NEGOTIABLE)
+## Design Principles
 
-These are for a user group with LOW digital literacy. Every design decision must serve them.
+The original target is a user group with LOW digital literacy. The UI/UX overhaul on 2026-04-25 made a deliberate trade against principle #1 below — large-text mode was relaxed in favour of a denser, more polished mobile-app aesthetic for the demo. The other nine principles still hold and are non-negotiable.
 
-1. **Text size minimum 16px body, 20px+ for key info, 24px+ for amounts**
-2. **Buttons minimum 48px tall, full-width on mobile**
+1. ~~Text size minimum 16px body, 20px+ for key info, 24px+ for amounts~~ → **Standard sizing throughout** (`text-sm` 14px / `text-base` 16px). The Tailwind extensions `text-body` (18/28), `text-lead` (20/30), `text-amount` (28/36) in `tailwind.config.ts` are **dead code** kept for reference only — do not introduce new uses. The exception is amounts on hero cards (gradient summary on `/dashboard` and `/insights`, amount card on `/aids/[id]`) which still use larger weight for emphasis.
+2. **Buttons minimum 48px tall** (Tailwind `min-h-tap`), full-width on mobile for primary CTAs
 3. **One primary action per screen** — never two competing CTAs
-4. **Icons + text always together** — never icon-only
+4. **Icons + text always together** — never icon-only (status pills always carry both glyph and label, e.g. `✓ Layak`)
 5. **High contrast** — dark text on light background, no grey-on-grey
-6. **Bahasa Malaysia as default** — English as secondary
+6. **Bahasa Malaysia as default** — `aids.json` display fields (rules / steps / docs / amount descriptions / tier labels / income_band) are stored in BM. **Strict matcher keys are kept in English** — `citizenship: "malaysian"`, `religion: "Islam"`, `state: "Selangor"`, `gender: "female"`, `education_status: "enrolled"`, `employment_history: "former_civil_servant"`. Changing those breaks `fallbackMatch` in `gemini.ts`. The detail page renders `"malaysian"` as "Warganegara Malaysia" via a small render-side mapper.
 7. **No jargon** — "Bantuan Wang" not "Financial Assistance Disbursement"
-8. **Progress is always visible** — show where they are in any multi-step flow
+8. **Progress is always visible** — show where they are in any multi-step flow (onboarding wizard has a percentage-based bar driven by phase → progress map)
 9. **Error messages in plain language** — "Cuba lagi" not "Error 422"
-10. **Confirmation before any action** — never silent submissions
+10. **Confirmation before any action** — never silent submissions (see profile reset which uses `confirm()`)
 
 ---
 
@@ -285,17 +307,18 @@ feat/chatbot
 
 ## Demo Script (for presentation)
 
-1. Open app on phone (or phone-sized browser window)
-2. Show landing screen — clean, Malay, one big button "Mula Sekarang"
-3. Go through onboarding as Mak Cik Aminah:
-   - Step 1: nama "Aminah", bahasa **Bahasa Malaysia**
-   - Step 2: umur **58**, jantina **Perempuan**, negeri **Selangor**, isi rumah **3**, anak di bawah 18 **1**
-   - Step 3: agama **Islam**, pendapatan **RM1,000 – RM2,000**
-4. Hit matching screen — pause here, let the AI result load visibly (typically 5–15s on Gemini paid tier; the app caches to localStorage so any re-open is instant)
-5. Say: "In seconds, AIDa found 9 programs Aminah qualifies for, worth thousands of ringgit a year — and crucially, she's never heard of most of them. Three are auto-credited or eligible right now. Six more she's '1 step away' from — see this yellow card? AIDa knows exactly what she needs to do to unlock them: register on eKasih. One link, one form."
-6. Open chatbot, type **"macam mana nak mohon STR?"** in Malay
-7. Show AIDa responding in Malay with the application steps from the catalog
-8. Show architecture slide — AWS Amplify + Gemini + Alibaba Cloud PAI/CDN
+1. Open app on phone (or phone-sized browser window). **Splash** plays for ~1.5s — green screen with "AIDa" logo and tagline.
+2. Splash auto-advances to **Welcome** — clean, Malay, one big button "Mula Sekarang".
+3. Onboarding as Mak Cik Aminah — **two paths to demo**:
+   - **eKYC path (default, more impressive):** pick **Bahasa Malaysia** → tap the MyKad mock card → 2s scan animation → confirmation screen pre-fills name/age/gender/state/religion (note: the MyKad mock is hard-coded to the Aminah persona). Tap "Sah & Teruskan".
+   - **Manual path (if asked):** "Isi sendiri tanpa MyKad" link → 5 quick screens (name "Aminah", umur 58, jantina Perempuan, negeri Selangor, agama Islam).
+   - Either path then: isi rumah **3**, anak di bawah 18 **1**, pendapatan **RM1,000 – RM2,000**.
+4. Hit **Home** (`/dashboard`) — pause here, let the AI result load visibly (typically 5–15s on Gemini paid tier; the app caches to localStorage so any re-open is instant). Hero shows a big **RM ___** total, then a 2-col grid of cards.
+5. Say: "In seconds, AIDa found 9 programs Aminah qualifies for, worth thousands of ringgit a year — and crucially, she's never heard of most of them. Three are auto-credited or eligible right now. Six more she's '1 step away' from — see these yellow ⚠ Hampir cards? Tap one and AIDa shows exactly what she needs: register on eKasih. One link, one form."
+6. Tap a card to show `/aids/[id]` detail (provider logo, eligibility, application steps in BM, sticky "Mohon Sekarang"). Back.
+7. Tap the **Insights tab** in the bottom nav — show the mock TnG wallet card and the AI advice ("Anda menjimatkan RM320 bulan ini") to set up the Touch 'n Go ecosystem story.
+8. Tap the **chat FAB** (bottom-right green button), type **"macam mana nak mohon STR?"** in Malay → show AIDa replying in BM with the application steps from the catalog.
+9. Show architecture slide — AWS Amplify + Gemini + Alibaba Cloud PAI/CDN.
 
 **Time target: 3 minutes demo, 2 minutes Q&A**
 
@@ -310,9 +333,9 @@ feat/chatbot
 ## What NOT to build (scope cuts for hackathon)
 
 - ❌ User authentication / login (use localStorage)
-- ❌ Real document upload
-- ❌ Payment / wallet integration (mention in slides only)
-- ❌ Full aid tracker (show as coming soon)
+- ❌ Real document upload (eKYC is a mock — `MyKadMock.tsx` is inline SVG, no camera permission is requested)
+- ❌ Real wallet integration — the TnG wallet on `/insights` is a static UI mock. Don't wire it to a real API; the demo intent is to communicate the Touch 'n Go ecosystem story, not to transact.
+- ❌ Real spending / transaction data — `/insights` "Corak perbelanjaan" and "Cadangan AIDa" are hard-coded; footnote on the page says so.
 - ❌ Admin dashboard
 - ❌ Real-time notifications
-- ❌ Full multilingual i18n (Malay + English sufficient for demo)
+- ❌ Full multilingual i18n — display fields in `aids.json` are BM-only. The other localized fields (`name.{en,zh,ta}`) still exist for the chatbot's `profile.language` switch but the catalog body fields aren't translated to en/zh/ta.

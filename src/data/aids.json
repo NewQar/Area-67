@@ -8,7 +8,7 @@
       "zh": "拉赫马现金援助",
       "ta": "ரஹ்மா பண உதவி"
     },
-    "provider": "LHDN / Ministry of Finance",
+    "provider": "LHDN / Kementerian Kewangan",
     "category": "cash",
     "is_recurring": true,
     "is_religion_specific": false,
@@ -18,52 +18,52 @@
       "type": "annual",
       "open_month": 10,
       "close_month": 11,
-      "notes": "Opens Oct, closes Nov each year. Phase 1 disbursement ~Jan 20."
+      "notes": "Buka pada Oktober, tutup November setiap tahun. Pembayaran Fasa 1 ~20 Januari."
     },
     "amount": {
       "min_myr": 100,
       "max_myr": 2200,
-      "description": "RM100–RM500 per phase; up to RM2,200/year for B40 households with 5+ children.",
+      "description": "RM100–RM500 setiap fasa; sehingga RM2,200/tahun untuk isi rumah B40 yang mempunyai 5+ orang anak.",
       "tiers": [
-        { "label": "B40 household (≤RM2,500/month)", "amount": "RM450–RM2,200/year", "num_children_factor": true },
-        { "label": "M40 household (RM2,501–RM5,000)", "amount": "RM450/year" },
-        { "label": "Elderly without spouse (60+)", "amount": "RM600/year" },
-        { "label": "Singles (non-student, ≤RM2,500)", "amount": "RM350/year" }
+        { "label": "Isi rumah B40 (≤RM2,500/bulan)", "amount": "RM450–RM2,200/tahun", "num_children_factor": true },
+        { "label": "Isi rumah M40 (RM2,501–RM5,000)", "amount": "RM450/tahun" },
+        { "label": "Warga emas tanpa pasangan (60+)", "amount": "RM600/tahun" },
+        { "label": "Bujang (bukan pelajar, ≤RM2,500)", "amount": "RM350/tahun" }
       ]
     },
     "eligibility_criteria": {
       "citizenship": "malaysian",
       "min_age": 18,
       "max_age": null,
-      "income_band": "≤RM5000/month household",
+      "income_band": "≤RM5,000/bulan isi rumah",
       "household_categories": ["isi_rumah", "bujang", "warga_emas_tanpa_pasangan"],
       "required_registrations": [],
       "additional_rules": [
-        "B40 (≤RM2,500) and M40 (RM2,501–RM5,000) receive different tiers.",
-        "Number of children (num_children) determines tier within B40 band.",
-        "Students below 21 do not qualify for Singles category.",
-        "Household income = combined income of applicant + spouse."
+        "B40 (≤RM2,500) dan M40 (RM2,501–RM5,000) menerima kadar berbeza.",
+        "Bilangan anak (num_children) menentukan kadar dalam jaluran B40.",
+        "Pelajar di bawah 21 tahun tidak layak untuk kategori Bujang.",
+        "Pendapatan isi rumah = pendapatan pemohon + pasangan."
       ]
     },
     "required_documents": [
-      "MyKad (applicant)",
-      "MyKad or MyKid (spouse and children if applicable)",
-      "Birth certificates of children",
-      "Proof of income (payslip / bank statement 3 months / self-declaration if gig)"
+      "MyKad (pemohon)",
+      "MyKad atau MyKid (pasangan dan anak jika berkenaan)",
+      "Sijil kelahiran anak",
+      "Bukti pendapatan (slip gaji / penyata bank 3 bulan / akuan diri jika gig)"
     ],
     "application": {
       "online_url": "https://bantuantunai.hasil.gov.my",
-      "offline_options": ["LHDN branch counters", "BSN counters (cash collection only)"],
+      "offline_options": ["Kaunter cawangan LHDN", "Kaunter BSN (kutipan tunai sahaja)"],
       "steps": [
-        "Visit bantuantunai.hasil.gov.my during Oct–Nov window",
-        "Select Permohonan Baharu STR (new) or Login MySTR (existing)",
-        "Update household, income, and dependant details",
-        "Upload supporting documents",
-        "Submit and save your reference number",
-        "Check status at the same portal after Phase 1 (~Jan 20)"
+        "Layari bantuantunai.hasil.gov.my dalam tempoh Oktober–November",
+        "Pilih Permohonan Baharu STR atau Login MySTR (sedia ada)",
+        "Kemas kini maklumat isi rumah, pendapatan dan tanggungan",
+        "Muat naik dokumen sokongan",
+        "Hantar dan simpan nombor rujukan anda",
+        "Semak status di portal yang sama selepas Fasa 1 (~20 Januari)"
       ],
       "renewal_required": true,
-      "renewal_notes": "Existing recipients must log in and update profile every Oct–Nov window."
+      "renewal_notes": "Penerima sedia ada perlu log masuk dan kemas kini profil setiap tempoh Oktober–November."
     },
     "linked_aids": ["sara-2026", "sara-untuk-semua-2026", "mykasih"],
     "tags": ["b40", "m40", "elderly", "household", "singles", "cash"],
@@ -82,7 +82,7 @@
       "zh": "拉赫马基本援助",
       "ta": "ரஹ்மா அடிப்படை உதவி"
     },
-    "provider": "Ministry of Finance / MyKasih Foundation",
+    "provider": "Kementerian Kewangan / Yayasan MyKasih",
     "category": "in_kind",
     "is_recurring": true,
     "is_auto_credited": true,
@@ -91,43 +91,43 @@
     "is_active": true,
     "application_window": {
       "type": "auto",
-      "notes": "Auto-credited monthly to MyKad. No separate application. Derived from STR status + eKasih tier."
+      "notes": "Auto-kredit setiap bulan ke MyKad. Tiada permohonan berasingan. Diperoleh daripada status STR + tahap eKasih."
     },
     "amount": {
       "min_myr": 50,
       "max_myr": 200,
-      "description": "Monthly MyKad credit for groceries at 10,000+ MyKasih partner stores.",
+      "description": "Kredit MyKad bulanan untuk barangan dapur di 10,000+ kedai rakan MyKasih.",
       "tiers": [
-        { "label": "eKasih Extremely Poor (Miskin Tegar)", "amount": "RM200/month" },
-        { "label": "eKasih Hard Core Poor", "amount": "RM150/month" },
-        { "label": "STR B40 recipients", "amount": "RM100/month" },
-        { "label": "STR M40 recipients", "amount": "RM50/month" }
+        { "label": "eKasih Miskin Tegar", "amount": "RM200/bulan" },
+        { "label": "eKasih Miskin", "amount": "RM150/bulan" },
+        { "label": "Penerima STR B40", "amount": "RM100/bulan" },
+        { "label": "Penerima STR M40", "amount": "RM50/bulan" }
       ]
     },
     "eligibility_criteria": {
       "citizenship": "malaysian",
       "min_age": 18,
       "max_age": null,
-      "income_band": "≤RM5000/month household",
+      "income_band": "≤RM5,000/bulan isi rumah",
       "required_registrations": ["str_recipient"],
       "additional_rules": [
-        "Auto-derived from STR recipient status. STR must be active for SARA to disburse.",
-        "Credit loaded to MyKad chip — only redeemable at registered MyKasih stores.",
-        "Cannot withdraw as cash."
+        "Diperoleh secara automatik daripada status penerima STR. STR mesti aktif untuk SARA dibayar.",
+        "Kredit dimuatkan ke cip MyKad — hanya boleh ditebus di kedai rakan MyKasih berdaftar.",
+        "Tidak boleh dikeluarkan sebagai tunai."
       ]
     },
-    "required_documents": ["None — auto-derived from STR eligibility. No separate upload needed."],
+    "required_documents": ["Tiada — diperoleh automatik daripada kelayakan STR. Tiada muat naik berasingan."],
     "application": {
       "online_url": "https://sara.gov.my/en/home.html",
       "store_locator_url": "https://www.mykasih.com.my/",
-      "offline_options": ["Nearest MyKasih partner store to verify balance"],
+      "offline_options": ["Kedai rakan MyKasih terdekat untuk semak baki"],
       "steps": [
-        "No application needed — SARA credit is auto-applied if you are an STR recipient",
-        "Visit any MyKasih partner store (mykasih.com.my for list)",
-        "Tap MyKad on terminal at checkout to use balance"
+        "Tiada permohonan diperlukan — kredit SARA dipakai automatik jika anda penerima STR",
+        "Pergi ke mana-mana kedai rakan MyKasih (rujuk mykasih.com.my untuk senarai)",
+        "Tap MyKad pada terminal di kaunter bayaran untuk guna baki"
       ],
       "renewal_required": false,
-      "renewal_notes": "Continues as long as STR recipient status is active."
+      "renewal_notes": "Berterusan selagi status penerima STR aktif."
     },
     "linked_aids": ["str-2026", "sara-untuk-semua-2026"],
     "tags": ["b40", "m40", "grocery", "mykad", "auto", "in_kind"],
@@ -146,7 +146,7 @@
       "zh": "全民拉赫马基本援助",
       "ta": "அனைவருக்கும் SARA"
     },
-    "provider": "Ministry of Finance",
+    "provider": "Kementerian Kewangan",
     "category": "in_kind",
     "is_recurring": false,
     "is_auto_credited": true,
@@ -155,14 +155,14 @@
     "is_active": true,
     "application_window": {
       "type": "one_off",
-      "notes": "Feb 2026 disbursement. Auto-credited to MyKad based on NRD records. No registration needed."
+      "notes": "Pembayaran Februari 2026. Auto-kredit ke MyKad berdasarkan rekod JPN. Tiada pendaftaran diperlukan."
     },
     "amount": {
       "min_myr": 100,
       "max_myr": 100,
-      "description": "One-off RM100 MyKad grocery credit for ALL Malaysian citizens aged 18+.",
+      "description": "Kredit dapur MyKad satu kali sebanyak RM100 untuk SEMUA warganegara Malaysia berumur 18+.",
       "tiers": [
-        { "label": "All citizens 18+", "amount": "RM100 (one-off, Feb 2026)" }
+        { "label": "Semua warganegara 18+", "amount": "RM100 (sekali, Feb 2026)" }
       ]
     },
     "eligibility_criteria": {
@@ -172,18 +172,18 @@
       "income_band": null,
       "required_registrations": [],
       "additional_rules": [
-        "Universal — no income restriction.",
-        "Auto-issued based on NRD (National Registration Department) records.",
-        "Must have valid MyKad to receive credit."
+        "Universal — tiada had pendapatan.",
+        "Dikeluarkan secara automatik berdasarkan rekod JPN (Jabatan Pendaftaran Negara).",
+        "Mesti mempunyai MyKad sah untuk menerima kredit."
       ]
     },
-    "required_documents": ["None — automatic based on NRD records."],
+    "required_documents": ["Tiada — automatik berdasarkan rekod JPN."],
     "application": {
       "online_url": "https://sara.gov.my/en/home.html",
       "store_locator_url": "https://www.mykasih.com.my/",
       "steps": [
-        "No action required — auto-credited to MyKad in Feb 2026",
-        "If not received by Mar 2026, check sara.gov.my or call 1-800-88-3100"
+        "Tiada tindakan diperlukan — auto-kredit ke MyKad pada Feb 2026",
+        "Jika tidak diterima menjelang Mac 2026, semak sara.gov.my atau hubungi 1-800-88-3100"
       ],
       "renewal_required": false
     },
@@ -208,36 +208,36 @@
     "is_state_specific": null,
     "is_active": true,
     "is_prerequisite_only": true,
-    "application_window": { "type": "open", "notes": "Always open. No window restriction." },
-    "amount": { "min_myr": 0, "max_myr": 0, "description": "Not an aid. Registration unlocks higher-tier SARA, JKM aids, and some zakat programs." },
+    "application_window": { "type": "open", "notes": "Sentiasa terbuka. Tiada had tempoh." },
+    "amount": { "min_myr": 0, "max_myr": 0, "description": "Bukan satu bantuan. Pendaftaran membuka kelayakan untuk SARA tahap lebih tinggi, bantuan JKM, dan beberapa program zakat." },
     "unlocks_aids": ["sara-2026", "jkm-bantuan-keluarga-miskin", "jkm-bib", "jkm-penjaga-oku"],
     "eligibility_criteria": {
       "citizenship": "malaysian",
       "min_age": 18,
-      "income_band": "≤RM2500/month household (B40 — for meaningful tier upgrade)",
+      "income_band": "≤RM2,500/bulan isi rumah (B40 — untuk faedah tahap bermakna)",
       "required_registrations": [],
       "additional_rules": [
-        "Any Malaysian may register but meaningful tier benefit requires B40 income.",
-        "JKM officer may conduct home visit to verify poverty status.",
-        "Processing time: 2–4 weeks for home visit + approval."
+        "Mana-mana rakyat Malaysia boleh daftar tetapi faedah tahap bermakna memerlukan pendapatan B40.",
+        "Pegawai JKM mungkin akan buat lawatan ke rumah untuk sahkan status kemiskinan.",
+        "Tempoh pemprosesan: 2–4 minggu untuk lawatan rumah + kelulusan."
       ]
     },
     "required_documents": [
-      "MyKad (applicant and all household members)",
-      "Proof of income (payslip / bank statement / self-declaration)",
-      "Utility bill (proof of address)"
+      "MyKad (pemohon dan semua ahli isi rumah)",
+      "Bukti pendapatan (slip gaji / penyata bank / akuan diri)",
+      "Bil utiliti (bukti alamat)"
     ],
     "application": {
       "online_url": "https://ekasih.gov.my",
-      "offline_options": ["Nearest JKM district office"],
+      "offline_options": ["Pejabat JKM daerah terdekat"],
       "steps": [
-        "Visit ekasih.gov.my or nearest JKM office",
-        "Submit household and income details",
-        "JKM officer schedules home visit (within 2 weeks)",
-        "Approval notified via letter or portal — check ekasih.gov.my"
+        "Layari ekasih.gov.my atau pejabat JKM terdekat",
+        "Hantar maklumat isi rumah dan pendapatan",
+        "Pegawai JKM akan jadualkan lawatan ke rumah (dalam 2 minggu)",
+        "Kelulusan dimaklumkan melalui surat atau portal — semak ekasih.gov.my"
       ],
       "renewal_required": false,
-      "renewal_notes": "One-time registration. JKM may request re-verification if income changes."
+      "renewal_notes": "Pendaftaran sekali sahaja. JKM mungkin minta semakan semula jika pendapatan berubah."
     },
     "tags": ["prerequisite", "b40", "jkm", "poverty_database", "gate"],
     "source_urls": ["https://ekasih.gov.my"],
@@ -252,7 +252,7 @@
       "zh": "MySalam B40回教保险计划",
       "ta": "MySalam B40 தக்காபுல் திட்டம்"
     },
-    "provider": "Ministry of Finance / Great Eastern (Takaful)",
+    "provider": "Kementerian Kewangan / Great Eastern (Takaful)",
     "category": "insurance",
     "is_recurring": true,
     "is_auto_credited": true,
@@ -261,39 +261,39 @@
     "is_active": true,
     "application_window": {
       "type": "auto",
-      "notes": "Auto-enrolled for all STR recipients. Coverage period follows STR."
+      "notes": "Auto-didaftarkan untuk semua penerima STR. Tempoh perlindungan mengikut STR."
     },
     "amount": {
       "min_myr": 0,
       "max_myr": 8000,
-      "description": "Free takaful for B40. Hospitalization: RM50/day (max 14 days/year). Critical illness: RM8,000 one-off. Death/total disability: RM5,000.",
+      "description": "Takaful percuma untuk B40. Kemasukan hospital: RM50/hari (maksimum 14 hari/tahun). Penyakit kritikal: RM8,000 sekali. Kematian/lumpuh kekal: RM5,000.",
       "tiers": [
-        { "label": "Hospitalization", "amount": "RM50/day (max 14 days/year = RM700)" },
-        { "label": "Critical illness diagnosis", "amount": "RM8,000 one-off" },
-        { "label": "Accidental death / total disability", "amount": "RM5,000" }
+        { "label": "Kemasukan hospital", "amount": "RM50/hari (maks 14 hari/tahun = RM700)" },
+        { "label": "Diagnosis penyakit kritikal", "amount": "RM8,000 sekali" },
+        { "label": "Kematian/lumpuh kekal akibat kemalangan", "amount": "RM5,000" }
       ]
     },
     "eligibility_criteria": {
       "citizenship": "malaysian",
       "min_age": 18,
       "max_age": 65,
-      "income_band": "≤RM2500/month household (B40 only)",
+      "income_band": "≤RM2,500/bulan isi rumah (B40 sahaja)",
       "required_registrations": ["str_recipient"],
       "additional_rules": [
-        "Auto-enrolled for all STR recipients aged 18–65.",
-        "Claims submitted via Great Eastern portal or hotline, not through AIDa.",
-        "Covers 36 critical illnesses including cancer, heart attack, stroke."
+        "Auto-didaftarkan untuk semua penerima STR berumur 18–65 tahun.",
+        "Tuntutan dihantar melalui portal Great Eastern atau hotline, bukan melalui AIDa.",
+        "Melindungi 36 penyakit kritikal termasuk kanser, serangan jantung, strok."
       ]
     },
-    "required_documents": ["None for enrollment — auto. For claims: medical report, discharge summary, IC."],
+    "required_documents": ["Tiada untuk pendaftaran — automatik. Untuk tuntutan: laporan perubatan, ringkasan keluar hospital, IC."],
     "application": {
       "online_url": "https://www.mysalam.com.my",
       "claim_url": "https://www.mysalam.com.my/claim",
       "steps": [
-        "No enrollment needed — auto-assigned if you are an STR B40 recipient",
-        "To CLAIM: visit mysalam.com.my/claim or call 1-300-1-MySalam",
-        "Upload hospital discharge summary or medical report",
-        "Claim processed within 14 working days"
+        "Tiada pendaftaran diperlukan — diberi automatik jika anda penerima STR B40",
+        "Untuk TUNTUTAN: layari mysalam.com.my/claim atau hubungi 1-300-1-MySalam",
+        "Muat naik ringkasan keluar hospital atau laporan perubatan",
+        "Tuntutan diproses dalam 14 hari bekerja"
       ],
       "renewal_required": false
     },
@@ -311,7 +311,7 @@
       "zh": "拉赫马青年电子现金",
       "ta": "ரஹ்மா இளையோர் e-பண உதவி"
     },
-    "provider": "Ministry of Finance",
+    "provider": "Kementerian Kewangan",
     "category": "cash_voucher",
     "is_recurring": false,
     "is_auto_credited": false,
@@ -320,13 +320,13 @@
     "is_active": true,
     "application_window": {
       "type": "one_off",
-      "notes": "Budget 2026 allocation. Application window TBC — check bantuantunai.hasil.gov.my."
+      "notes": "Peruntukan Belanjawan 2026. Tempoh permohonan akan diumumkan — semak bantuantunai.hasil.gov.my."
     },
     "amount": {
       "min_myr": 200,
       "max_myr": 200,
-      "description": "RM200 one-off e-voucher for Malaysian youth aged 18–20.",
-      "tiers": [{ "label": "Youth 18–20", "amount": "RM200 one-off" }]
+      "description": "Baucar elektronik RM200 sekali untuk belia Malaysia berumur 18–20 tahun.",
+      "tiers": [{ "label": "Belia 18–20", "amount": "RM200 sekali" }]
     },
     "eligibility_criteria": {
       "citizenship": "malaysian",
@@ -335,20 +335,20 @@
       "income_band": null,
       "required_registrations": [],
       "additional_rules": [
-        "Age 18–20 inclusive as of application date.",
-        "No income restriction — universal for the age group.",
-        "Credit disbursed to approved e-wallet (TNG eWallet or Boost)."
+        "Umur 18–20 tahun penuh pada tarikh permohonan.",
+        "Tiada had pendapatan — universal untuk kumpulan umur ini.",
+        "Kredit dibayar ke e-wallet yang diluluskan (TNG eWallet atau Boost)."
       ]
     },
-    "required_documents": ["MyKad (must show age 18–20)"],
+    "required_documents": ["MyKad (mesti menunjukkan umur 18–20)"],
     "application": {
       "online_url": "https://bantuantunai.hasil.gov.my",
       "steps": [
-        "Visit bantuantunai.hasil.gov.my during application window",
-        "Log in with MyDigital ID or IC + OTP",
-        "Select e-Tunai Belia Rahmah application",
-        "Confirm e-wallet details for disbursement",
-        "Credit appears in e-wallet within 5 working days"
+        "Layari bantuantunai.hasil.gov.my dalam tempoh permohonan",
+        "Log masuk dengan MyDigital ID atau IC + OTP",
+        "Pilih permohonan e-Tunai Belia Rahmah",
+        "Sahkan butiran e-wallet untuk pembayaran",
+        "Kredit muncul dalam e-wallet dalam 5 hari bekerja"
       ],
       "renewal_required": false
     },
@@ -373,48 +373,48 @@
     "is_religion_specific": false,
     "is_state_specific": null,
     "is_active": true,
-    "application_window": { "type": "open", "notes": "Open year-round. Apply at JKM district office." },
+    "application_window": { "type": "open", "notes": "Buka sepanjang tahun. Mohon di pejabat JKM daerah." },
     "amount": {
       "min_myr": 450,
       "max_myr": 450,
-      "description": "RM450/month for caregiver of a person with disability registered under JKM.",
-      "tiers": [{ "label": "Caregiver (any OKU category)", "amount": "RM450/month" }]
+      "description": "RM450/bulan untuk penjaga orang kurang upaya yang berdaftar dengan JKM.",
+      "tiers": [{ "label": "Penjaga (mana-mana kategori OKU)", "amount": "RM450/bulan" }]
     },
     "eligibility_criteria": {
       "citizenship": "malaysian",
       "min_age": 18,
       "max_age": null,
-      "income_band": "B40 (household income ≤RM2,500/month preferred)",
+      "income_band": "B40 (pendapatan isi rumah ≤RM2,500/bulan diutamakan)",
       "required_registrations": ["ekasih"],
       "additional_rules": [
-        "Caregiver must live with and provide full-time care for the OKU person.",
-        "OKU person must be registered with JKM (MyKad OKU status).",
-        "One allowance per household — if multiple OKU, only one caregiver claim.",
-        "Caregiver cannot be receiving another JKM allowance simultaneously."
+        "Penjaga mesti tinggal bersama dan menjaga OKU sepenuh masa.",
+        "OKU mesti berdaftar dengan JKM (status OKU pada MyKad).",
+        "Satu elaun setiap isi rumah — jika ada beberapa OKU, hanya satu tuntutan penjaga.",
+        "Penjaga tidak boleh menerima elaun JKM lain pada masa yang sama."
       ]
     },
     "required_documents": [
-      "MyKad (caregiver)",
-      "MyKad (OKU person)",
-      "JKM OKU registration certificate",
-      "Medical report confirming disability",
-      "eKasih registration confirmation",
-      "Proof of address (utility bill)",
-      "Statutory declaration of full-time caregiving"
+      "MyKad (penjaga)",
+      "MyKad (OKU)",
+      "Sijil pendaftaran OKU JKM",
+      "Laporan perubatan mengesahkan kurang upaya",
+      "Pengesahan pendaftaran eKasih",
+      "Bukti alamat (bil utiliti)",
+      "Akuan berkanun penjagaan sepenuh masa"
     ],
     "application": {
       "online_url": "https://www.jkm.gov.my",
-      "offline_options": ["JKM district office (required for home visit)"],
+      "offline_options": ["Pejabat JKM daerah (diperlukan untuk lawatan rumah)"],
       "steps": [
-        "Register OKU person on JKM OKU registry if not already done",
-        "Register caregiver household on eKasih (if not done)",
-        "Visit nearest JKM district office with all documents",
-        "Submit JKM18 form + caregiver-specific form",
-        "JKM officer will schedule home verification visit",
-        "Approval within 4–6 weeks. Monthly payment to bank account."
+        "Daftar OKU dalam daftar JKM jika belum lagi",
+        "Daftar isi rumah penjaga dalam eKasih (jika belum)",
+        "Pergi ke pejabat JKM daerah terdekat dengan semua dokumen",
+        "Hantar borang JKM18 + borang khusus penjaga",
+        "Pegawai JKM akan jadualkan lawatan rumah untuk pengesahan",
+        "Kelulusan dalam 4–6 minggu. Bayaran bulanan ke akaun bank."
       ],
       "renewal_required": true,
-      "renewal_notes": "Annual renewal — JKM case review each year. OKU status must remain active."
+      "renewal_notes": "Pembaharuan tahunan — semakan kes JKM setiap tahun. Status OKU mesti aktif."
     },
     "linked_aids": ["ekasih-registration"],
     "tags": ["oku", "caregiver", "disability", "monthly", "jkm"],
@@ -439,43 +439,43 @@
     "is_active": true,
     "application_window": {
       "type": "event_triggered",
-      "notes": "Apply within 6 months of childbirth. No calendar window."
+      "notes": "Mohon dalam 6 bulan selepas bersalin. Tiada tempoh kalendar tetap."
     },
     "amount": {
       "min_myr": 350,
       "max_myr": 350,
-      "description": "RM350 one-time maternity aid for low-income mothers.",
-      "tiers": [{ "label": "Low-income mother (B40)", "amount": "RM350 one-off per birth" }]
+      "description": "Bantuan bersalin RM350 sekali untuk ibu berpendapatan rendah.",
+      "tiers": [{ "label": "Ibu berpendapatan rendah (B40)", "amount": "RM350 sekali setiap kelahiran" }]
     },
     "eligibility_criteria": {
       "citizenship": "malaysian",
       "min_age": null,
       "max_age": null,
       "gender": "female",
-      "income_band": "≤RM2500/month household (B40)",
+      "income_band": "≤RM2,500/bulan isi rumah (B40)",
       "required_registrations": ["ekasih"],
       "additional_rules": [
-        "Must apply within 6 months of birth.",
-        "Child must have birth certificate.",
-        "Household must be registered in eKasih poverty database.",
-        "Applicable for each qualifying birth (not limited to first child)."
+        "Mesti memohon dalam 6 bulan selepas kelahiran.",
+        "Anak mesti mempunyai sijil kelahiran.",
+        "Isi rumah mesti berdaftar dalam pangkalan data eKasih.",
+        "Berkenaan untuk setiap kelahiran yang layak (tidak terhad kepada anak pertama)."
       ]
     },
     "required_documents": [
-      "MyKad (mother)",
-      "Baby birth certificate",
-      "Hospital discharge or doctor letter confirming birth",
-      "eKasih registration confirmation",
-      "Bank account details"
+      "MyKad (ibu)",
+      "Sijil kelahiran bayi",
+      "Surat keluar hospital atau surat doktor mengesahkan kelahiran",
+      "Pengesahan pendaftaran eKasih",
+      "Butiran akaun bank"
     ],
     "application": {
       "online_url": "https://www.jkm.gov.my",
-      "offline_options": ["JKM district office"],
+      "offline_options": ["Pejabat JKM daerah"],
       "steps": [
-        "Apply at nearest JKM district office within 6 months of birth",
-        "Bring all required documents",
-        "Submit application form + supporting documents",
-        "Approval within 2–4 weeks. One-time payment to bank account."
+        "Mohon di pejabat JKM daerah terdekat dalam 6 bulan selepas bersalin",
+        "Bawa semua dokumen yang diperlukan",
+        "Hantar borang permohonan + dokumen sokongan",
+        "Kelulusan dalam 2–4 minggu. Bayaran sekali ke akaun bank."
       ],
       "renewal_required": false
     },
@@ -500,48 +500,48 @@
     "is_religion_specific": false,
     "is_state_specific": null,
     "is_active": true,
-    "application_window": { "type": "open", "notes": "Open year-round at JKM district office." },
+    "application_window": { "type": "open", "notes": "Buka sepanjang tahun di pejabat JKM daerah." },
     "amount": {
       "min_myr": 150,
       "max_myr": 450,
-      "description": "Monthly aid scaled by number of dependent children.",
+      "description": "Bantuan bulanan mengikut bilangan anak tanggungan.",
       "tiers": [
-        { "label": "1 child", "amount": "RM150/month" },
-        { "label": "2–3 children", "amount": "RM300/month" },
-        { "label": "4+ children", "amount": "RM450/month" }
+        { "label": "1 anak", "amount": "RM150/bulan" },
+        { "label": "2–3 anak", "amount": "RM300/bulan" },
+        { "label": "4+ anak", "amount": "RM450/bulan" }
       ]
     },
     "eligibility_criteria": {
       "citizenship": "malaysian",
       "min_age": 18,
       "max_age": null,
-      "income_band": "≤RM2500/month household (B40)",
+      "income_band": "≤RM2,500/bulan isi rumah (B40)",
       "required_registrations": ["ekasih"],
       "additional_rules": [
-        "Children must be below 18 and in school.",
-        "Single parents (divorced, widowed, spouse incapacitated) given priority.",
-        "Household must be registered in eKasih."
+        "Anak mesti di bawah 18 tahun dan bersekolah.",
+        "Ibu/bapa tunggal (cerai, balu, pasangan tidak berupaya) diberi keutamaan.",
+        "Isi rumah mesti berdaftar dalam eKasih."
       ]
     },
     "required_documents": [
-      "MyKad (parent/guardian)",
-      "MyKid or MyKad (each child)",
-      "Birth certificates (children)",
-      "School enrollment proof (children)",
-      "eKasih registration confirmation",
-      "Proof of single parenthood if applicable (divorce cert / death cert / medical cert)"
+      "MyKad (ibu/bapa/penjaga)",
+      "MyKid atau MyKad (setiap anak)",
+      "Sijil kelahiran (anak)",
+      "Bukti pendaftaran sekolah (anak)",
+      "Pengesahan pendaftaran eKasih",
+      "Bukti ibu/bapa tunggal jika berkenaan (sijil cerai / sijil kematian / sijil perubatan)"
     ],
     "application": {
       "online_url": "https://www.jkm.gov.my",
-      "offline_options": ["JKM district office"],
+      "offline_options": ["Pejabat JKM daerah"],
       "steps": [
-        "Register household on eKasih (if not already done)",
-        "Visit JKM district office with all documents",
-        "JKM officer conducts home visit for means testing",
-        "Approval within 4–6 weeks. Monthly bank credit."
+        "Daftar isi rumah dalam eKasih (jika belum)",
+        "Pergi ke pejabat JKM daerah dengan semua dokumen",
+        "Pegawai JKM akan buat lawatan rumah untuk ujian kemampuan",
+        "Kelulusan dalam 4–6 minggu. Kredit bulanan ke akaun bank."
       ],
       "renewal_required": true,
-      "renewal_notes": "Annual review — income and children status re-verified."
+      "renewal_notes": "Semakan tahunan — pendapatan dan status anak disahkan semula."
     },
     "linked_aids": ["ekasih-registration", "jkm-bib"],
     "tags": ["family", "children", "single_parent", "monthly", "b40", "jkm"],
@@ -557,21 +557,21 @@
       "zh": "退休公务员援助金",
       "ta": "ஓய்வூதியர் உதவி"
     },
-    "provider": "Jabatan Perkhidmatan Awam (JPA) / Pensions Division",
+    "provider": "Jabatan Perkhidmatan Awam (JPA) / Bahagian Pencen",
     "category": "retiree",
     "is_recurring": true,
     "is_auto_credited": true,
     "is_religion_specific": false,
     "is_state_specific": null,
     "is_active": true,
-    "application_window": { "type": "auto", "notes": "Auto-processed on retirement from civil service." },
+    "application_window": { "type": "auto", "notes": "Diproses automatik selepas persaraan dari perkhidmatan awam." },
     "amount": {
       "min_myr": 250,
       "max_myr": null,
-      "description": "Minimum RM250/month supplementary to pension. Amount depends on service grade and years.",
+      "description": "Minimum RM250/bulan tambahan kepada pencen. Jumlah bergantung pada gred perkhidmatan dan tempoh.",
       "tiers": [
-        { "label": "Low-grade retiree (Grade 11 and below)", "amount": "RM250+/month" },
-        { "label": "Higher grades", "amount": "Varies by last drawn salary" }
+        { "label": "Pesara gred rendah (Gred 11 ke bawah)", "amount": "RM250+/bulan" },
+        { "label": "Gred lebih tinggi", "amount": "Bergantung pada gaji terakhir" }
       ]
     },
     "eligibility_criteria": {
@@ -582,19 +582,19 @@
       "employment_history": "former_civil_servant",
       "required_registrations": [],
       "additional_rules": [
-        "Must have served minimum qualifying period (10 years for full pension).",
-        "Covers Malaysian civil servants retired from federal government service.",
-        "BPEN supplement is in addition to standard pension — targets lower-grade retirees."
+        "Mesti telah berkhidmat tempoh minimum yang layak (10 tahun untuk pencen penuh).",
+        "Meliputi penjawat awam Malaysia yang bersara dari perkhidmatan kerajaan persekutuan.",
+        "Tambahan BPEN adalah selain pencen biasa — disasarkan kepada pesara gred rendah."
       ]
     },
-    "required_documents": ["None — auto-issued on retirement. For queries: IC + pension reference number."],
+    "required_documents": ["Tiada — dikeluarkan automatik selepas persaraan. Untuk pertanyaan: IC + nombor rujukan pencen."],
     "application": {
       "online_url": "https://www.jpa.gov.my/",
-      "offline_options": ["Pensions Division (Bahagian Pencen, Putrajaya)"],
+      "offline_options": ["Bahagian Pencen, Putrajaya"],
       "steps": [
-        "Auto-processed upon civil service retirement",
-        "Confirm pension details at jpa.gov.my or nearest JPA office",
-        "If supplement not received, contact Bahagian Pencen with IC + pension letter"
+        "Diproses automatik selepas persaraan dari perkhidmatan awam",
+        "Sahkan butiran pencen di jpa.gov.my atau pejabat JPA terdekat",
+        "Jika tambahan tidak diterima, hubungi Bahagian Pencen dengan IC + surat pencen"
       ],
       "renewal_required": false
     },
@@ -621,15 +621,15 @@
     "religion_required": "Islam",
     "is_state_specific": "Selangor",
     "is_active": true,
-    "application_window": { "type": "open", "notes": "Open year-round. Apply online or at LZS office." },
+    "application_window": { "type": "open", "notes": "Buka sepanjang tahun. Mohon dalam talian atau di pejabat LZS." },
     "amount": {
       "min_myr": 250,
       "max_myr": 700,
-      "description": "Monthly living aid for asnaf (zakat recipients) in Selangor. Amount varies by asnaf category and household size.",
+      "description": "Bantuan sara hidup bulanan untuk asnaf di Selangor. Jumlah berbeza mengikut kategori asnaf dan saiz isi rumah.",
       "tiers": [
-        { "label": "Fakir (no income, extremely poor)", "amount": "RM400–RM700/month" },
-        { "label": "Miskin (insufficient income)", "amount": "RM250–RM500/month" },
-        { "label": "Mualaf (new Muslim convert)", "amount": "RM250–RM400/month" }
+        { "label": "Fakir (tiada pendapatan, miskin tegar)", "amount": "RM400–RM700/bulan" },
+        { "label": "Miskin (pendapatan tidak mencukupi)", "amount": "RM250–RM500/bulan" },
+        { "label": "Mualaf (saudara baru)", "amount": "RM250–RM400/bulan" }
       ]
     },
     "eligibility_criteria": {
@@ -638,34 +638,34 @@
       "max_age": null,
       "religion": "Islam",
       "state": "Selangor",
-      "income_band": "Below had kifayah (LZS sufficiency threshold — approx RM2,000/month for household of 4)",
+      "income_band": "Di bawah had kifayah (ambang LZS — kira-kira RM2,000/bulan untuk isi rumah 4 orang)",
       "asnaf_categories": ["fakir", "miskin", "mualaf", "gharimin", "fisabilillah", "ibnu_sabil"],
       "required_registrations": ["asnaf_registered_lzs"],
       "additional_rules": [
-        "Must be registered as asnaf with LZS — home visit required for first-time applicants.",
-        "Had kifayah threshold calculated by LZS based on household size and region.",
-        "Muslims living in Selangor (including Shah Alam, Klang, Petaling Jaya, Subang)."
+        "Mesti berdaftar sebagai asnaf dengan LZS — lawatan rumah diperlukan untuk pemohon kali pertama.",
+        "Ambang had kifayah dikira oleh LZS berdasarkan saiz isi rumah dan kawasan.",
+        "Orang Islam yang tinggal di Selangor (termasuk Shah Alam, Klang, Petaling Jaya, Subang)."
       ]
     },
     "required_documents": [
-      "MyKad (applicant and all household members)",
-      "Proof of income (payslip / bank statement 3 months / self-declaration)",
-      "Proof of address in Selangor (utility bill)",
-      "Household members list with IC numbers",
-      "Asnaf supporting document (e.g. mualaf certificate if applicable)"
+      "MyKad (pemohon dan semua ahli isi rumah)",
+      "Bukti pendapatan (slip gaji / penyata bank 3 bulan / akuan diri)",
+      "Bukti alamat di Selangor (bil utiliti)",
+      "Senarai ahli isi rumah dengan nombor IC",
+      "Dokumen sokongan asnaf (cth. sijil mualaf jika berkenaan)"
     ],
     "application": {
       "online_url": "https://www.zakatselangor.com.my",
-      "offline_options": ["LZS Selangor main office", "Nearest MAIS/LZS counter"],
+      "offline_options": ["Pejabat utama LZS Selangor", "Kaunter MAIS/LZS terdekat"],
       "steps": [
-        "Visit zakatselangor.com.my and register as applicant",
-        "Select Bantuan Sara Hidup Bulanan",
-        "Upload all required documents",
-        "LZS officer will schedule asnaf verification home visit",
-        "Approval within 4–6 weeks. Monthly bank or cash collection."
+        "Layari zakatselangor.com.my dan daftar sebagai pemohon",
+        "Pilih Bantuan Sara Hidup Bulanan",
+        "Muat naik semua dokumen yang diperlukan",
+        "Pegawai LZS akan jadualkan lawatan rumah untuk pengesahan asnaf",
+        "Kelulusan dalam 4–6 minggu. Bayaran bulanan ke bank atau kutipan tunai."
       ],
       "renewal_required": true,
-      "renewal_notes": "Annual renewal — LZS re-assesses asnaf status and household income each year."
+      "renewal_notes": "Pembaharuan tahunan — LZS menilai semula status asnaf dan pendapatan isi rumah setiap tahun."
     },
     "linked_aids": ["lzs-bantuan-pendidikan"],
     "tags": ["zakat", "selangor", "asnaf", "monthly", "islam", "fakir", "miskin"],
@@ -690,16 +690,16 @@
     "is_active": true,
     "application_window": {
       "type": "semester",
-      "notes": "Apply each semester. Typically Jan–Feb (Sem 1) and Jun–Jul (Sem 2)."
+      "notes": "Mohon setiap semester. Biasanya Jan–Feb (Sem 1) dan Jun–Jul (Sem 2)."
     },
     "amount": {
       "min_myr": 100,
       "max_myr": 500,
-      "description": "Per-semester education aid for asnaf students in Selangor.",
+      "description": "Bantuan pendidikan setiap semester untuk pelajar asnaf di Selangor.",
       "tiers": [
-        { "label": "Primary school", "amount": "RM100/semester" },
-        { "label": "Secondary school", "amount": "RM150–RM200/semester" },
-        { "label": "Tertiary (diploma/degree)", "amount": "RM300–RM500/semester" }
+        { "label": "Sekolah rendah", "amount": "RM100/semester" },
+        { "label": "Sekolah menengah", "amount": "RM150–RM200/semester" },
+        { "label": "Pengajian tinggi (diploma/ijazah)", "amount": "RM300–RM500/semester" }
       ]
     },
     "eligibility_criteria": {
@@ -707,33 +707,33 @@
       "religion": "Islam",
       "state": "Selangor",
       "education_status": "enrolled",
-      "income_band": "Below had kifayah (asnaf household)",
+      "income_band": "Di bawah had kifayah (isi rumah asnaf)",
       "asnaf_categories": ["fakir", "miskin", "mualaf", "fisabilillah"],
       "required_registrations": ["asnaf_registered_lzs"],
       "additional_rules": [
-        "Student must be enrolled in government school, community college, polytechnic, or public university.",
-        "Parent/guardian household must qualify as asnaf.",
-        "For tertiary: student may apply directly if independent asnaf."
+        "Pelajar mesti mendaftar di sekolah kerajaan, kolej komuniti, politeknik, atau universiti awam.",
+        "Isi rumah ibu/bapa/penjaga mesti layak sebagai asnaf.",
+        "Untuk pengajian tinggi: pelajar boleh memohon sendiri jika asnaf bebas."
       ]
     },
     "required_documents": [
-      "MyKad (student and parent/guardian)",
-      "Enrollment letter from school/university",
-      "Latest exam results (for tertiary)",
-      "Parent/guardian income proof",
-      "Asnaf registration with LZS"
+      "MyKad (pelajar dan ibu/bapa/penjaga)",
+      "Surat pendaftaran dari sekolah/universiti",
+      "Keputusan peperiksaan terkini (untuk pengajian tinggi)",
+      "Bukti pendapatan ibu/bapa/penjaga",
+      "Pendaftaran asnaf dengan LZS"
     ],
     "application": {
       "online_url": "https://pendidikan.zakatselangor.com.my",
       "steps": [
-        "Visit pendidikan.zakatselangor.com.my",
-        "Register or log in as LZS asnaf",
-        "Select current semester and education level",
-        "Upload enrollment letter, results, and parent income documents",
-        "Submit before semester deadline (Jan/Jun)"
+        "Layari pendidikan.zakatselangor.com.my",
+        "Daftar atau log masuk sebagai asnaf LZS",
+        "Pilih semester semasa dan tahap pendidikan",
+        "Muat naik surat pendaftaran, keputusan, dan dokumen pendapatan ibu/bapa",
+        "Hantar sebelum tarikh akhir semester (Jan/Jun)"
       ],
       "renewal_required": true,
-      "renewal_notes": "Must re-apply each semester. Auto-approval for returning recipients with unchanged status."
+      "renewal_notes": "Mesti mohon semula setiap semester. Kelulusan automatik untuk penerima berulang dengan status tidak berubah."
     },
     "linked_aids": ["lzs-bsh-bulanan"],
     "tags": ["zakat", "selangor", "education", "student", "asnaf", "scholarship"],
@@ -758,50 +758,50 @@
     "is_state_specific": "Wilayah Persekutuan",
     "state_covers": ["Kuala Lumpur", "Putrajaya", "Labuan"],
     "is_active": true,
-    "application_window": { "type": "open", "notes": "Open year-round via emaiwp.maiwp.gov.my. Walk-in also available." },
+    "application_window": { "type": "open", "notes": "Buka sepanjang tahun di emaiwp.maiwp.gov.my. Walk-in juga boleh." },
     "amount": {
       "min_myr": 300,
       "max_myr": 600,
-      "description": "Monthly bantuan sara hidup for asnaf in KL, Putrajaya, and Labuan.",
+      "description": "Bantuan sara hidup bulanan untuk asnaf di KL, Putrajaya dan Labuan.",
       "tiers": [
-        { "label": "Fakir (no income)", "amount": "RM500–RM600/month" },
-        { "label": "Miskin (insufficient income)", "amount": "RM300–RM500/month" },
-        { "label": "Mualaf", "amount": "RM300–RM400/month" }
+        { "label": "Fakir (tiada pendapatan)", "amount": "RM500–RM600/bulan" },
+        { "label": "Miskin (pendapatan tidak mencukupi)", "amount": "RM300–RM500/bulan" },
+        { "label": "Mualaf", "amount": "RM300–RM400/bulan" }
       ]
     },
     "eligibility_criteria": {
       "citizenship": "malaysian",
       "religion": "Islam",
       "state": "Wilayah Persekutuan",
-      "income_band": "Below had kifayah (MAIWP threshold — approx RM2,200/month for household of 4)",
+      "income_band": "Di bawah had kifayah (ambang MAIWP — kira-kira RM2,200/bulan untuk isi rumah 4 orang)",
       "asnaf_categories": ["fakir", "miskin", "mualaf", "gharimin", "fisabilillah", "ibnu_sabil"],
       "required_registrations": ["asnaf_registered_maiwp"],
       "additional_rules": [
-        "Resident of KL, Putrajaya, or Labuan only.",
-        "First-time applicants require home visit by MAIWP officer.",
-        "Had kifayah assessed based on household size and location (higher for urban KL)."
+        "Penduduk KL, Putrajaya atau Labuan sahaja.",
+        "Pemohon kali pertama memerlukan lawatan rumah oleh pegawai MAIWP.",
+        "Had kifayah dinilai mengikut saiz isi rumah dan lokasi (lebih tinggi untuk bandar KL)."
       ]
     },
     "required_documents": [
-      "MyKad (applicant and all household members)",
-      "Proof of income (payslip / bank statement 3 months / self-declaration)",
-      "Proof of WP address (utility bill or tenancy agreement)",
-      "Household members list",
-      "Mualaf certificate (if applicable)"
+      "MyKad (pemohon dan semua ahli isi rumah)",
+      "Bukti pendapatan (slip gaji / penyata bank 3 bulan / akuan diri)",
+      "Bukti alamat WP (bil utiliti atau perjanjian sewa)",
+      "Senarai ahli isi rumah",
+      "Sijil mualaf (jika berkenaan)"
     ],
     "application": {
       "online_url": "https://emaiwp.maiwp.gov.my",
-      "offline_options": ["MAIWP Baitulmal office, Jalan Raja Laut KL", "Mobile counters at mosques"],
-      "mobile_app": "MoJA (available on Play Store / App Store)",
+      "offline_options": ["Pejabat MAIWP Baitulmal, Jalan Raja Laut KL", "Kaunter bergerak di masjid"],
+      "mobile_app": "MoJA (di Play Store / App Store)",
       "steps": [
-        "Register at emaiwp.maiwp.gov.my or visit MAIWP Baitulmal office",
-        "Select Bantuan Asnaf and your asnaf category",
-        "Upload all required documents",
-        "MAIWP officer schedules home verification visit",
-        "Approval 2–4 weeks. Monthly bank credit."
+        "Daftar di emaiwp.maiwp.gov.my atau pergi ke pejabat MAIWP Baitulmal",
+        "Pilih Bantuan Asnaf dan kategori asnaf anda",
+        "Muat naik semua dokumen yang diperlukan",
+        "Pegawai MAIWP akan jadualkan lawatan rumah untuk pengesahan",
+        "Kelulusan 2–4 minggu. Kredit bulanan ke akaun bank."
       ],
       "renewal_required": true,
-      "renewal_notes": "Annual renewal — MAIWP re-assesses asnaf status each year."
+      "renewal_notes": "Pembaharuan tahunan — MAIWP menilai semula status asnaf setiap tahun."
     },
     "linked_aids": [],
     "tags": ["zakat", "wp", "kl", "putrajaya", "labuan", "asnaf", "monthly", "maiwp"],
@@ -825,46 +825,46 @@
     "religion_required": "Islam",
     "is_state_specific": "Sarawak",
     "is_active": true,
-    "application_window": { "type": "open", "notes": "Open year-round. Apply at TBS Kuching or district offices." },
+    "application_window": { "type": "open", "notes": "Buka sepanjang tahun. Mohon di pejabat TBS Kuching atau pejabat daerah." },
     "amount": {
       "min_myr": 150,
       "max_myr": 400,
-      "description": "Monthly asnaf living aid for Muslim residents of Sarawak.",
+      "description": "Bantuan sara hidup bulanan asnaf untuk penduduk Islam di Sarawak.",
       "tiers": [
-        { "label": "Fakir", "amount": "RM300–RM400/month" },
-        { "label": "Miskin", "amount": "RM150–RM300/month" }
+        { "label": "Fakir", "amount": "RM300–RM400/bulan" },
+        { "label": "Miskin", "amount": "RM150–RM300/bulan" }
       ]
     },
     "eligibility_criteria": {
       "citizenship": "malaysian",
       "religion": "Islam",
       "state": "Sarawak",
-      "income_band": "Below had kifayah (TBS threshold — approx RM1,500/month for household of 4)",
+      "income_band": "Di bawah had kifayah (ambang TBS — kira-kira RM1,500/bulan untuk isi rumah 4 orang)",
       "asnaf_categories": ["fakir", "miskin", "mualaf"],
       "required_registrations": ["asnaf_registered_tbs"],
       "additional_rules": [
-        "Sarawak residents only. Separate from Peninsular Malaysia zakat bodies.",
-        "TBS runs independently from LZNK or other federal zakat entities.",
-        "Had kifayah threshold typically lower than Peninsular states due to lower COL."
+        "Penduduk Sarawak sahaja. Berasingan daripada badan zakat Semenanjung Malaysia.",
+        "TBS beroperasi secara bebas daripada LZNK atau badan zakat persekutuan lain.",
+        "Ambang had kifayah biasanya lebih rendah daripada negeri Semenanjung kerana kos sara hidup yang lebih rendah."
       ]
     },
     "required_documents": [
-      "MyKad (applicant and household)",
-      "Proof of income",
-      "Proof of Sarawak address",
-      "Household member list"
+      "MyKad (pemohon dan isi rumah)",
+      "Bukti pendapatan",
+      "Bukti alamat di Sarawak",
+      "Senarai ahli isi rumah"
     ],
     "application": {
       "online_url": "https://www.tbs.org.my",
-      "offline_options": ["TBS Kuching main office", "TBS district counters"],
+      "offline_options": ["Pejabat utama TBS Kuching", "Kaunter daerah TBS"],
       "steps": [
-        "Visit tbs.org.my or nearest TBS district office",
-        "Register as asnaf and select Bantuan Sara Hidup",
-        "Submit documents and await home visit",
-        "Approval 4–8 weeks. Monthly bank credit."
+        "Layari tbs.org.my atau pergi ke pejabat TBS daerah terdekat",
+        "Daftar sebagai asnaf dan pilih Bantuan Sara Hidup",
+        "Hantar dokumen dan tunggu lawatan rumah",
+        "Kelulusan 4–8 minggu. Kredit bulanan ke akaun bank."
       ],
       "renewal_required": true,
-      "renewal_notes": "Annual renewal — TBS re-assesses asnaf status."
+      "renewal_notes": "Pembaharuan tahunan — TBS menilai semula status asnaf."
     },
     "linked_aids": [],
     "tags": ["zakat", "sarawak", "asnaf", "monthly", "islam"],
@@ -880,7 +880,7 @@
       "zh": "雪兰莪Bingkas援助金",
       "ta": "சிலாங்கூர் Bingkas உதவி"
     },
-    "provider": "Selangor State Government",
+    "provider": "Kerajaan Negeri Selangor",
     "category": "cash",
     "is_recurring": true,
     "is_auto_credited": false,
@@ -890,42 +890,42 @@
     "unverified": false,
     "application_window": {
       "type": "annual",
-      "notes": "Announced for Jul 2026 launch. Check selangorkini.gov.my for confirmed dates."
+      "notes": "Diumumkan untuk pelancaran Julai 2026. Semak selangorkini.gov.my untuk tarikh sah."
     },
     "amount": {
       "min_myr": 300,
       "max_myr": 300,
-      "description": "RM300/month cash aid for eligible B40 households in Selangor.",
-      "tiers": [{ "label": "B40 Selangor residents", "amount": "RM300/month" }]
+      "description": "Bantuan tunai RM300/bulan untuk isi rumah B40 yang layak di Selangor.",
+      "tiers": [{ "label": "Penduduk B40 Selangor", "amount": "RM300/bulan" }]
     },
     "eligibility_criteria": {
       "citizenship": "malaysian",
       "min_age": 18,
       "max_age": null,
       "state": "Selangor",
-      "income_band": "≤RM2500/month household (B40)",
+      "income_band": "≤RM2,500/bulan isi rumah (B40)",
       "required_registrations": [],
       "additional_rules": [
-        "Selangor residents only — confirm via address or MyKad state code.",
-        "Income threshold: ≤RM2,500/month household.",
-        "Pending official gazette — eligibility criteria may be refined at launch.",
-        "Expected start: July 2026."
+        "Penduduk Selangor sahaja — sahkan melalui alamat atau kod negeri MyKad.",
+        "Had pendapatan: ≤RM2,500/bulan isi rumah.",
+        "Menanti warta rasmi — kriteria kelayakan mungkin diperhalusi semasa pelancaran.",
+        "Permulaan dijangka: Julai 2026."
       ]
     },
     "required_documents": [
-      "MyKad (showing Selangor address)",
-      "Proof of income",
-      "Proof of Selangor address (utility bill)"
+      "MyKad (menunjukkan alamat Selangor)",
+      "Bukti pendapatan",
+      "Bukti alamat di Selangor (bil utiliti)"
     ],
     "application": {
       "online_url": "https://selangorkini.gov.my",
       "steps": [
-        "Monitor selangorkini.gov.my for official launch announcement (expected Jul 2026)",
-        "Apply via Selangor state portal when window opens",
-        "Upload IC, income proof, and address verification"
+        "Pantau selangorkini.gov.my untuk pengumuman pelancaran rasmi (dijangka Julai 2026)",
+        "Mohon melalui portal kerajaan negeri Selangor apabila tempoh dibuka",
+        "Muat naik IC, bukti pendapatan dan pengesahan alamat"
       ],
       "renewal_required": true,
-      "renewal_notes": "Annual renewal expected — confirm post-launch."
+      "renewal_notes": "Pembaharuan tahunan dijangka — sahkan selepas pelancaran."
     },
     "linked_aids": ["str-2026", "lzs-bsh-bulanan"],
     "tags": ["selangor", "state", "cash", "b40", "monthly"],

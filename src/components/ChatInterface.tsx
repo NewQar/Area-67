@@ -106,7 +106,7 @@ export default function ChatInterface() {
         </div>
         <div>
           <p className="font-semibold leading-tight">AIDa</p>
-          <p className="text-xs text-aida-muted">Pembantu bantuan anda</p>
+          <p className="text-xs text-aida-muted">Aid Intelligent & Discovery Assistant</p>
         </div>
       </header>
 
@@ -173,11 +173,10 @@ function Bubble({ role, children }: { role: 'user' | 'assistant'; children: Reac
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
       <div
-        className={`max-w-[85%] rounded-2xl px-4 py-3 text-body shadow-sm ${
-          isUser
+        className={`max-w-[85%] rounded-2xl px-4 py-3 text-body shadow-sm ${isUser
             ? 'bg-white text-aida-ink rounded-br-md border border-black/5'
             : 'bg-aida-green text-white rounded-bl-md'
-        }`}
+          }`}
       >
         {children}
       </div>

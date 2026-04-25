@@ -1,145 +1,124 @@
+import Link from 'next/link';
+import { getAidLogo } from '@/lib/logo';
 import type { Aid, Language, MatchStatus } from '@/lib/types';
 
 function formatAmountRange(aid: Aid): string {
   const { min_myr, max_myr } = aid.amount;
   if (min_myr === 0 && (max_myr === 0 || max_myr == null)) return '';
   if (max_myr == null || max_myr === min_myr) return `RM${min_myr.toLocaleString('en-MY')}`;
-  return `RM${min_myr.toLocaleString('en-MY')}–RM${max_myr.toLocaleString('en-MY')}`;
+  return `RM${min_myr.toLocaleString('en-MY')}–${max_myr.toLocaleString('en-MY')}`;
 }
 
 function localizedName(aid: Aid, language: Language): string {
   return aid.name[language] || aid.name.ms;
 }
 
-const STATUS_LABEL: Record<MatchStatus, string> = {
-  eligible: 'Anda layak',
-  partial: 'Hampir layak',
-  auto: 'Auto — tiada permohonan',
+const STATUS_META: Record<
+  MatchStatus,
+  { label: string; className: string; icon: string }
+> = {
+  eligible: {
+    label: 'Layak',
+    className: 'bg-aida-greenLight text-aida-greenDark border-aida-green/30',
+    icon: '✓',
+  },
+  partial: {
+    label: 'Hampir',
+    className: 'bg-yellow-50 text-yellow-900 border-yellow-300',
+    icon: '⚠',
+  },
+  auto: {
+    label: 'Auto',
+    className: 'bg-aida-greenLight text-aida-greenDark border-aida-green/30',
+    icon: '⚡',
+  },
 };
 
 export default function AidCard({
   aid,
-  reason,
-  confidence,
   language = 'ms',
   status,
-  gap,
-  fixUrl,
-  estimatedDays,
 }: {
   aid: Aid;
-  reason: string;
-  confidence?: number;
   language?: Language;
   status?: MatchStatus;
-  gap?: string;
-  fixUrl?: string;
-  estimatedDays?: number;
 }) {
   const amount = formatAmountRange(aid);
-  const isAuto = status === 'auto' || (status !== 'partial' && aid.is_auto_credited === true);
-  const isPartial = status === 'partial';
-  const applyUrl = aid.application.online_url;
-  const isMs = language === 'ms';
+  const effectiveStatus: MatchStatus | undefined =
+    status ?? (aid.is_auto_credited ? 'auto' : undefined);
+  const meta = effectiveStatus ? STATUS_META[effectiveStatus] : null;
+  const logo = getAidLogo(aid.id);
+  const isPartial = effectiveStatus === 'partial';
 
   return (
-    <article className={`card space-y-3 ${isPartial ? 'border-yellow-300' : ''}`}>
-      <header className="space-y-1">
-        <h2 className="text-2xl font-bold leading-tight">{localizedName(aid, language)}</h2>
-        <p className="text-sm text-aida-muted">{aid.provider}</p>
-      </header>
-
-      <div className="flex items-baseline flex-wrap gap-2">
-        {amount && <span className="text-amount font-bold text-aida-green">{amount}</span>}
-        {isAuto && (
-          <span className="chip text-sm bg-aida-greenLight text-aida-greenDark border border-aida-green/30">
-            ⚡ {STATUS_LABEL.auto}
-          </span>
-        )}
-        {isPartial && (
-          <span className="chip text-sm bg-yellow-50 text-yellow-900 border border-yellow-300">
-            ⚠ {STATUS_LABEL.partial}
-          </span>
-        )}
-        {typeof confidence === 'number' && !isPartial && (
-          <span className="ml-auto chip text-sm">
-            {Math.round(confidence * 100)}% padanan
+    <Link
+      href={`/aids/${aid.id}`}
+      className={`flex flex-col bg-white rounded-2xl border shadow-sm p-3 active:scale-[0.98] transition ${
+        isPartial ? 'border-yellow-200' : 'border-black/5'
+      }`}
+    >
+      <div className="flex items-start justify-between gap-1.5">
+        <ProviderLogo src={logo} fallback={aid.provider} />
+        {meta && (
+          <span
+            className={`shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full border text-[10px] font-semibold ${meta.className}`}
+          >
+            <span aria-hidden>{meta.icon}</span>
+            {meta.label}
           </span>
         )}
       </div>
 
-      <p className="text-body">{aid.amount.description}</p>
+      <h3 className="mt-2.5 text-sm font-semibold leading-tight line-clamp-2 min-h-[2.25rem]">
+        {localizedName(aid, language)}
+      </h3>
 
-      {isPartial && gap ? (
-        <div className="rounded-xl bg-yellow-50 border border-yellow-200 p-3">
-          <p className="text-sm font-semibold text-yellow-900 mb-1">
-            {isMs ? 'Apa yang kurang?' : "What's missing?"}
-          </p>
-          <p className="text-body">{gap}</p>
-          {typeof estimatedDays === 'number' && (
-            <p className="mt-1 text-sm text-aida-muted">
-              {isMs ? `Anggaran ${estimatedDays} hari` : `~${estimatedDays} days`}
+      <div className="mt-auto pt-2.5 border-t border-black/5">
+        {amount ? (
+          <>
+            <p className="text-[10px] text-aida-muted leading-none uppercase tracking-wider">
+              Nilai
             </p>
-          )}
-        </div>
-      ) : (
-        <div className="rounded-xl bg-aida-greenLight border border-aida-green/20 p-3">
-          <p className="text-sm font-semibold text-aida-greenDark mb-1">
-            {isMs ? 'Mengapa anda layak?' : 'Why you qualify'}
-          </p>
-          <p className="text-body text-aida-ink">{reason}</p>
-        </div>
-      )}
-
-      {isPartial && fixUrl ? (
-        <a href={fixUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
-          {isMs ? 'Daftar dahulu →' : 'Register first →'}
-        </a>
-      ) : applyUrl ? (
-        <a href={applyUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
-          {isAuto ? (isMs ? 'Lihat butiran →' : 'View details →') : isMs ? 'Mohon Sekarang →' : 'Apply Now →'}
-        </a>
-      ) : null}
-    </article>
+            <p className="mt-1 text-sm font-bold text-aida-green truncate">{amount}</p>
+          </>
+        ) : (
+          <p className="text-xs text-aida-muted">Pendaftaran</p>
+        )}
+      </div>
+    </Link>
   );
 }
 
-export function NearMissCard({
-  aid,
-  gap,
-  suggestion,
-  fixUrl,
-  language = 'ms',
+export function ProviderLogo({
+  src,
+  fallback,
+  size = 'md',
 }: {
-  aid: Aid;
-  gap: string;
-  suggestion: string;
-  fixUrl?: string;
-  language?: Language;
+  src: string | null;
+  fallback: string;
+  size?: 'md' | 'lg';
 }) {
-  const amount = formatAmountRange(aid);
-  return (
-    <article className="card space-y-2 border-dashed">
-      <header className="flex items-baseline justify-between gap-3">
-        <h2 className="text-xl font-semibold">{localizedName(aid, language)}</h2>
-        {amount && <span className="text-aida-green font-bold">{amount}</span>}
-      </header>
-      <p className="text-sm text-aida-muted">{aid.provider}</p>
-      <div className="rounded-xl bg-yellow-50 border border-yellow-200 p-3">
-        <p className="text-sm font-semibold text-yellow-900">Apa yang kurang?</p>
-        <p className="text-body">{gap}</p>
-        <p className="mt-2 text-sm text-aida-muted">{suggestion}</p>
+  const dim = size === 'lg' ? 'w-12 h-12' : 'w-10 h-10';
+  if (src) {
+    return (
+      <div
+        className={`shrink-0 ${dim} rounded-xl bg-white border border-black/5 grid place-items-center overflow-hidden`}
+      >
+        <img
+          src={src}
+          alt=""
+          className="w-full h-full object-contain p-1"
+          loading="lazy"
+        />
       </div>
-      {fixUrl && (
-        <a
-          href={fixUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-secondary"
-        >
-          Daftar sekarang →
-        </a>
-      )}
-    </article>
+    );
+  }
+  return (
+    <div
+      aria-hidden
+      className={`shrink-0 ${dim} rounded-xl bg-aida-greenLight text-aida-greenDark grid place-items-center font-bold`}
+    >
+      {fallback.charAt(0).toUpperCase()}
+    </div>
   );
 }
