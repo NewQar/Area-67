@@ -96,7 +96,7 @@ export default function ChatInterface() {
   }
 
   return (
-    <div className="flex-1 flex flex-col h-screen">
+    <div className="flex-1 flex flex-col h-dvh">
       <header className="sticky top-0 bg-white border-b border-black/5 px-4 py-3 flex items-center gap-3 z-10">
         <Link href="/dashboard" aria-label="Kembali" className="p-2 -ml-2 text-aida-ink">
           ←
@@ -127,7 +127,7 @@ export default function ChatInterface() {
         )}
       </div>
 
-      <div className="border-t border-black/5 bg-white">
+      <div className="border-t border-black/5 bg-white pb-[env(safe-area-inset-bottom)]">
         <div className="px-4 pt-3 pb-2 flex gap-2 overflow-x-auto">
           {SUGGESTIONS.map((s) => (
             <button
