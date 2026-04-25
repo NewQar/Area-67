@@ -119,11 +119,11 @@
     "required_documents": ["Tiada — diperoleh automatik daripada kelayakan STR. Tiada muat naik berasingan."],
     "application": {
       "online_url": "https://sara.gov.my/en/home.html",
-      "store_locator_url": "https://www.mykasih.com.my/",
+      "store_locator_url": "https://mykasih.my/",
       "offline_options": ["Kedai rakan MyKasih terdekat untuk semak baki"],
       "steps": [
         "Tiada permohonan diperlukan — kredit SARA dipakai automatik jika anda penerima STR",
-        "Pergi ke mana-mana kedai rakan MyKasih (rujuk mykasih.com.my untuk senarai)",
+        "Pergi ke mana-mana kedai rakan MyKasih (rujuk mykasih.my untuk senarai)",
         "Tap MyKad pada terminal di kaunter bayaran untuk guna baki"
       ],
       "renewal_required": false,
@@ -133,7 +133,7 @@
     "tags": ["b40", "m40", "grocery", "mykad", "auto", "in_kind"],
     "source_urls": [
       "https://sara.gov.my/en/home.html",
-      "https://www.mykasih.com.my/"
+      "https://mykasih.my/"
     ],
     "last_verified_at": "2026-04-25"
   },
@@ -180,7 +180,7 @@
     "required_documents": ["Tiada — automatik berdasarkan rekod JPN."],
     "application": {
       "online_url": "https://sara.gov.my/en/home.html",
-      "store_locator_url": "https://www.mykasih.com.my/",
+      "store_locator_url": "https://mykasih.my/",
       "steps": [
         "Tiada tindakan diperlukan — auto-kredit ke MyKad pada Feb 2026",
         "Jika tidak diterima menjelang Mac 2026, semak sara.gov.my atau hubungi 1-800-88-3100"
@@ -287,7 +287,7 @@
     },
     "required_documents": ["Tiada untuk pendaftaran — automatik. Untuk tuntutan: laporan perubatan, ringkasan keluar hospital, IC."],
     "application": {
-      "online_url": "https://www.mysalam.com.my",
+      "online_url": "https://www.mysalam.com.my/mys/info/",
       "claim_url": "https://www.mysalam.com.my/claim",
       "steps": [
         "Tiada pendaftaran diperlukan — diberi automatik jika anda penerima STR B40",
@@ -299,7 +299,7 @@
     },
     "linked_aids": ["str-2026"],
     "tags": ["b40", "insurance", "takaful", "health", "auto", "hospital", "critical_illness"],
-    "source_urls": ["https://www.mysalam.com.my"],
+    "source_urls": ["https://www.mysalam.com.my/mys/info/"],
     "last_verified_at": "2026-04-25"
   },
   {
@@ -890,7 +890,7 @@
     "unverified": false,
     "application_window": {
       "type": "annual",
-      "notes": "Diumumkan untuk pelancaran Julai 2026. Semak selangorkini.gov.my untuk tarikh sah."
+      "notes": "Diumumkan untuk pelancaran Julai 2026. Semak bingkasselangor.com untuk tarikh sah."
     },
     "amount": {
       "min_myr": 300,
@@ -918,9 +918,9 @@
       "Bukti alamat di Selangor (bil utiliti)"
     ],
     "application": {
-      "online_url": "https://selangorkini.gov.my",
+      "online_url": "https://bingkasselangor.com/",
       "steps": [
-        "Pantau selangorkini.gov.my untuk pengumuman pelancaran rasmi (dijangka Julai 2026)",
+        "Pantau bingkasselangor.com untuk pengumuman pelancaran rasmi (dijangka Julai 2026)",
         "Mohon melalui portal kerajaan negeri Selangor apabila tempoh dibuka",
         "Muat naik IC, bukti pendapatan dan pengesahan alamat"
       ],
@@ -929,7 +929,7 @@
     },
     "linked_aids": ["str-2026", "lzs-bsh-bulanan"],
     "tags": ["selangor", "state", "cash", "b40", "monthly"],
-    "source_urls": ["https://selangorkini.gov.my"],
+    "source_urls": ["https://bingkasselangor.com/"],
     "last_verified_at": "2026-04-25"
   }
 ]
