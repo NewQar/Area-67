@@ -1,12 +1,15 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function SplashPage() {
   const router = useRouter();
+  const [enter, setEnter] = useState(false);
 
   useEffect(() => {
+    const raf = requestAnimationFrame(() => setEnter(true));
     const timer = setTimeout(() => {
       let hasProfile = false;
       try {
@@ -16,27 +19,41 @@ export default function SplashPage() {
       }
       router.replace(hasProfile ? '/dashboard' : '/welcome');
     }, 1500);
-    return () => clearTimeout(timer);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(timer);
+    };
   }, [router]);
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-6 bg-aida-green text-white">
+    <div className="flex-1 flex flex-col items-center justify-center px-6 bg-white text-aida-ink">
       <div className="flex flex-col items-center gap-5">
         <div
-          aria-hidden
-          className="w-24 h-24 rounded-3xl bg-white text-aida-green grid place-items-center text-5xl font-bold shadow-lg"
+          className={`transition-all duration-700 ease-out ${
+            enter ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+          }`}
         >
-          A
+          <Image
+            src="/logo/aida.png"
+            alt="AIDa"
+            width={120}
+            height={120}
+            priority
+            className="w-28 h-28 object-contain drop-shadow-lg"
+          />
         </div>
-        <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-white">AIDa</h1>
-          <p className="mt-1 text-sm text-white/80">Aid Intelligent & Discovery Assistant</p>
+        <div
+          className={`text-center transition-all duration-700 ease-out delay-200 ${
+            enter ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+          }`}
+        >
+          <p className="text-sm text-aida-muted">Aid Intelligent & Discovery Assistant</p>
         </div>
       </div>
       <div className="mt-12">
         <div
           aria-label="Memuatkan"
-          className="w-8 h-8 rounded-full border-[3px] border-white/30 border-t-white animate-spin"
+          className="w-8 h-8 rounded-full border-[3px] border-aida-green/20 border-t-aida-green animate-spin"
         />
       </div>
     </div>
