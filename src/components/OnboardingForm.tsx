@@ -72,10 +72,10 @@ const PROGRESS: Record<Phase, number> = {
 };
 
 const MOCK_MYKAD = {
-  name: 'Ahmad',
-  age: 42,
-  gender: 'male' as Gender,
-  state: 'Kelantan',
+  name: 'Aminah',
+  age: 58,
+  gender: 'female' as Gender,
+  state: 'Selangor',
   religion: 'islam' as ReligionChoice,
 };
 
@@ -377,7 +377,7 @@ export default function OnboardingForm() {
               autoComplete="given-name"
               autoFocus
               className="field"
-              placeholder="cth. Ahmad"
+              placeholder="cth. Aminah"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />

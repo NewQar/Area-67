@@ -39,9 +39,9 @@ export default function MyKadMock({ scanning = false }: { scanning?: boolean }) 
 
         <div className="absolute top-[58px] left-[78px] right-3 text-white">
           <div className="text-[6px] text-white/60 uppercase tracking-wider">No. Pengenalan</div>
-          <div className="text-[11px] font-semibold tracking-wider">840515-03-5247</div>
+          <div className="text-[11px] font-semibold tracking-wider">680515-10-5246</div>
           <div className="mt-1.5 text-[6px] text-white/60 uppercase tracking-wider">Nama</div>
-          <div className="text-[9px] font-semibold leading-tight">AHMAD BIN ABDULLAH</div>
+          <div className="text-[9px] font-semibold leading-tight">AMINAH BINTI ABDULLAH</div>
           <div className="mt-1 text-[6px] text-white/60 uppercase tracking-wider">Warganegara</div>
           <div className="text-[8px] font-semibold">WARGANEGARA</div>
         </div>
