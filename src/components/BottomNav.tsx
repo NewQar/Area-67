@@ -69,7 +69,7 @@ export default function BottomNav() {
                 href={tab.href}
                 aria-current={active ? 'page' : undefined}
                 className={`flex flex-col items-center justify-center gap-1 py-2.5 min-h-[60px] text-xs font-medium transition ${
-                  active ? 'text-aida-green' : 'text-aida-muted'
+                  active ? 'text-aida-blue' : 'text-aida-muted'
                 }`}
               >
                 {tab.icon(active)}

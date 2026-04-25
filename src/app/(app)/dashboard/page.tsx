@@ -129,14 +129,14 @@ export default function DashboardPage() {
         </div>
         <div
           aria-hidden
-          className="w-10 h-10 rounded-full bg-aida-greenLight text-aida-green grid place-items-center text-base font-bold"
+          className="w-10 h-10 rounded-full bg-aida-blueLight text-aida-blue grid place-items-center text-base font-bold"
         >
           {firstName.charAt(0).toUpperCase() || 'A'}
         </div>
       </header>
 
       {!loading && !error && result && matchedAids.length > 0 && (
-        <section className="mt-5 rounded-2xl bg-gradient-to-br from-aida-green to-aida-greenDark text-white p-4 shadow-md">
+        <section className="mt-5 rounded-2xl bg-gradient-to-br from-aida-blue to-aida-blueDark text-white p-4 shadow-md">
           <p className="text-xs text-white/80 font-medium">Anggaran nilai bantuan</p>
           <p className="mt-1 text-3xl font-bold tracking-tight">
             RM{totalValue.toLocaleString('en-MY')}
@@ -149,7 +149,7 @@ export default function DashboardPage() {
 
       {loading && (
         <div className="mt-10 flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded-full border-[3px] border-aida-greenLight border-t-aida-green animate-spin" />
+          <div className="w-10 h-10 rounded-full border-[3px] border-aida-blueLight border-t-aida-blue animate-spin" />
           <p className="text-sm text-aida-muted">AIDa sedang mencari padanan…</p>
         </div>
       )}
@@ -223,7 +223,7 @@ export default function DashboardPage() {
                   >
                     <span
                       aria-hidden
-                      className="w-6 h-6 shrink-0 rounded-full bg-aida-green text-white grid place-items-center text-xs font-bold"
+                      className="w-6 h-6 shrink-0 rounded-full bg-aida-blue text-white grid place-items-center text-xs font-bold"
                     >
                       {i + 1}
                     </span>

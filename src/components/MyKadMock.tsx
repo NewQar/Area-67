@@ -57,9 +57,9 @@ export default function MyKadMock({ scanning = false }: { scanning?: boolean }) 
 
       {scanning && (
         <>
-          <div className="absolute inset-0 rounded-2xl ring-4 ring-aida-green/60 animate-pulse" />
+          <div className="absolute inset-0 rounded-2xl ring-4 ring-aida-blue/60 animate-pulse" />
           <div
-            className="absolute left-0 right-0 h-[3px] bg-aida-green shadow-[0_0_12px_2px_rgba(10,124,74,0.8)]"
+            className="absolute left-0 right-0 h-[3px] bg-aida-blue shadow-[0_0_12px_2px_rgba(37,99,235,0.8)]"
             style={{
               top: '0%',
               animation: 'mykad-scan 1.6s ease-in-out infinite',

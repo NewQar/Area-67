@@ -7,7 +7,7 @@ export default function WelcomePage() {
         <div className="inline-flex items-center gap-3">
           <div
             aria-hidden
-            className="w-11 h-11 rounded-2xl bg-aida-green text-white grid place-items-center text-xl font-bold"
+            className="w-11 h-11 rounded-2xl bg-aida-blue text-white grid place-items-center text-xl font-bold"
           >
             A
           </div>
@@ -20,7 +20,7 @@ export default function WelcomePage() {
 
       <section className="flex-1 flex flex-col justify-center py-10">
         <h1 className="text-3xl font-bold leading-tight">
-          Cari bantuan yang <span className="text-aida-green">anda layak</span> terima.
+          Cari bantuan yang <span className="text-aida-blue">anda layak</span> terima.
         </h1>
         <p className="mt-3 text-base text-aida-muted">
           Jawab beberapa soalan ringkas. AIDa akan tunjukkan bantuan kerajaan dan zakat untuk anda — dalam 30 saat.
@@ -28,15 +28,15 @@ export default function WelcomePage() {
 
         <ul className="mt-7 space-y-2.5 text-sm">
           <li className="flex items-start gap-2.5">
-            <span aria-hidden className="mt-0.5 text-aida-green">✓</span>
+            <span aria-hidden className="mt-0.5 text-aida-blue">✓</span>
             Percuma dan tanpa daftar
           </li>
           <li className="flex items-start gap-2.5">
-            <span aria-hidden className="mt-0.5 text-aida-green">✓</span>
+            <span aria-hidden className="mt-0.5 text-aida-blue">✓</span>
             Tersedia dalam Bahasa Malaysia
           </li>
           <li className="flex items-start gap-2.5">
-            <span aria-hidden className="mt-0.5 text-aida-green">✓</span>
+            <span aria-hidden className="mt-0.5 text-aida-blue">✓</span>
             Sembang dengan AIDa untuk panduan
           </li>
         </ul>

@@ -28,21 +28,21 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center w-full min-h-tap px-6 py-3 rounded-2xl bg-aida-green text-white text-lead font-semibold shadow-sm transition active:scale-[0.99] hover:bg-aida-greenDark disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center w-full min-h-tap px-6 py-3 rounded-2xl bg-aida-blue text-white text-lead font-semibold shadow-sm transition active:scale-[0.99] hover:bg-aida-blueDark disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center w-full min-h-tap px-6 py-3 rounded-2xl border-2 border-aida-green text-aida-green text-lead font-semibold transition active:scale-[0.99] hover:bg-aida-greenLight;
+    @apply inline-flex items-center justify-center w-full min-h-tap px-6 py-3 rounded-2xl border-2 border-aida-blue text-aida-blue text-lead font-semibold transition active:scale-[0.99] hover:bg-aida-blueLight;
   }
   .card {
     @apply bg-white rounded-2xl shadow-sm border border-black/5 p-5;
   }
   .chip {
-    @apply inline-flex items-center min-h-tap px-4 py-2 rounded-full bg-aida-greenLight text-aida-greenDark text-body font-medium border border-aida-green/20;
+    @apply inline-flex items-center min-h-tap px-4 py-2 rounded-full bg-aida-blueLight text-aida-blueDark text-body font-medium border border-aida-blue/20;
   }
   .label {
     @apply block text-body font-semibold text-aida-ink mb-2;
   }
   .field {
-    @apply w-full rounded-xl border-2 border-black/10 px-4 py-3 text-body focus:outline-none focus:border-aida-green;
+    @apply w-full rounded-xl border-2 border-black/10 px-4 py-3 text-body focus:outline-none focus:border-aida-blue;
   }
 }

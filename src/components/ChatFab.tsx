@@ -6,7 +6,7 @@ export default function ChatFab() {
       <Link
         href="/chat"
         aria-label="Sembang dengan AIDa"
-        className="pointer-events-auto absolute bottom-[76px] right-5 w-14 h-14 rounded-full bg-aida-green text-white grid place-items-center shadow-lg active:scale-95 transition"
+        className="pointer-events-auto absolute bottom-[76px] right-5 w-14 h-14 rounded-full bg-aida-blue text-white grid place-items-center shadow-lg active:scale-95 transition"
       >
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z" />

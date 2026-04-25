@@ -101,7 +101,7 @@ export default function ChatInterface() {
         <Link href="/dashboard" aria-label="Kembali" className="p-2 -ml-2 text-aida-ink">
           ←
         </Link>
-        <div className="w-10 h-10 rounded-full bg-aida-green text-white grid place-items-center font-bold">
+        <div className="w-10 h-10 rounded-full bg-aida-blue text-white grid place-items-center font-bold">
           A
         </div>
         <div>
@@ -158,7 +158,7 @@ export default function ChatInterface() {
           <button
             type="submit"
             disabled={sending || input.trim().length === 0}
-            className="min-h-tap px-5 rounded-2xl bg-aida-green text-white font-semibold disabled:opacity-50"
+            className="min-h-tap px-5 rounded-2xl bg-aida-blue text-white font-semibold disabled:opacity-50"
           >
             Hantar
           </button>
@@ -175,7 +175,7 @@ function Bubble({ role, children }: { role: 'user' | 'assistant'; children: Reac
       <div
         className={`max-w-[85%] rounded-2xl px-4 py-3 text-body shadow-sm ${isUser
             ? 'bg-white text-aida-ink rounded-br-md border border-black/5'
-            : 'bg-aida-green text-white rounded-bl-md'
+            : 'bg-aida-blue text-white rounded-bl-md'
           }`}
       >
         {children}

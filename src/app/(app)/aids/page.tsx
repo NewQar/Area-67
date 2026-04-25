@@ -96,7 +96,7 @@ export default function AidsPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Cari bantuan…"
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-black/10 bg-white text-sm focus:outline-none focus:border-aida-green"
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-black/10 bg-white text-sm focus:outline-none focus:border-aida-blue"
         />
       </div>
 
@@ -108,7 +108,7 @@ export default function AidsPage() {
             onClick={() => setCategory(c)}
             className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition ${
               category === c
-                ? 'bg-aida-green text-white'
+                ? 'bg-aida-blue text-white'
                 : 'bg-white text-aida-ink border border-black/10'
             }`}
           >

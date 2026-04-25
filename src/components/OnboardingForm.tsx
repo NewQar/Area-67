@@ -215,7 +215,7 @@ export default function OnboardingForm() {
             className="h-1.5 bg-black/5 rounded-full overflow-hidden"
           >
             <div
-              className="h-full bg-aida-green transition-all duration-500"
+              className="h-full bg-aida-blue transition-all duration-500"
               style={{ width: `${PROGRESS[phase]}%` }}
             />
           </div>
@@ -247,7 +247,7 @@ export default function OnboardingForm() {
                   aria-pressed={language === l.value}
                   className={`min-h-tap rounded-xl border-2 px-4 py-3 text-base font-semibold transition ${
                     language === l.value
-                      ? 'border-aida-green bg-aida-greenLight text-aida-greenDark'
+                      ? 'border-aida-blue bg-aida-blueLight text-aida-blueDark'
                       : 'border-black/10 text-aida-ink'
                   }`}
                 >
@@ -274,7 +274,7 @@ export default function OnboardingForm() {
               aria-label="Tap untuk imbas MyKad"
             >
               <MyKadMock />
-              <div className="mt-4 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-aida-green text-white text-sm font-semibold shadow-md group-active:scale-[0.98] transition">
+              <div className="mt-4 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-aida-blue text-white text-sm font-semibold shadow-md group-active:scale-[0.98] transition">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M3 7V5a2 2 0 0 1 2-2h2" />
                   <path d="M17 3h2a2 2 0 0 1 2 2v2" />
@@ -289,7 +289,7 @@ export default function OnboardingForm() {
             <button
               type="button"
               onClick={() => go('manual-name')}
-              className="text-sm text-aida-green font-semibold underline underline-offset-4"
+              className="text-sm text-aida-blue font-semibold underline underline-offset-4"
             >
               Isi sendiri tanpa MyKad
             </button>
@@ -306,7 +306,7 @@ export default function OnboardingForm() {
             </div>
             <MyKadMock scanning />
             <div className="flex items-center gap-2 text-sm text-aida-muted">
-              <div className="w-3 h-3 rounded-full border-2 border-aida-greenLight border-t-aida-green animate-spin" />
+              <div className="w-3 h-3 rounded-full border-2 border-aida-blueLight border-t-aida-blue animate-spin" />
               <span>Memproses imej…</span>
             </div>
           </div>
@@ -315,7 +315,7 @@ export default function OnboardingForm() {
         {phase === 'mykad-confirm' && (
           <div className="space-y-5">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-aida-greenLight text-aida-greenDark text-xs font-semibold">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-aida-blueLight text-aida-blueDark text-xs font-semibold">
                 <span aria-hidden>✓</span> Maklumat dikenal pasti
               </div>
               <h1 className="mt-3 text-2xl font-bold">Sah maklumat ini?</h1>
@@ -406,7 +406,7 @@ export default function OnboardingForm() {
                   aria-pressed={gender === g.value}
                   className={`min-h-tap rounded-xl border-2 px-4 py-3 text-base font-semibold transition ${
                     gender === g.value
-                      ? 'border-aida-green bg-aida-greenLight text-aida-greenDark'
+                      ? 'border-aida-blue bg-aida-blueLight text-aida-blueDark'
                       : 'border-black/10 text-aida-ink'
                   }`}
                 >
@@ -453,7 +453,7 @@ export default function OnboardingForm() {
                   aria-pressed={religion === r.value}
                   className={`min-h-tap rounded-xl border-2 px-4 py-3 text-base font-semibold transition ${
                     religion === r.value
-                      ? 'border-aida-green bg-aida-greenLight text-aida-greenDark'
+                      ? 'border-aida-blue bg-aida-blueLight text-aida-blueDark'
                       : 'border-black/10 text-aida-ink'
                   }`}
                 >
@@ -515,7 +515,7 @@ export default function OnboardingForm() {
                   aria-pressed={monthlyIncome === b.value}
                   className={`w-full min-h-tap rounded-xl border-2 px-4 py-3 text-left text-base font-semibold transition ${
                     monthlyIncome === b.value
-                      ? 'border-aida-green bg-aida-greenLight text-aida-greenDark'
+                      ? 'border-aida-blue bg-aida-blueLight text-aida-blueDark'
                       : 'border-black/10 text-aida-ink'
                   }`}
                 >
@@ -570,14 +570,14 @@ function NumberStepper({
         type="button"
         onClick={dec}
         aria-label="Kurangkan"
-        className="w-12 h-12 rounded-xl border-2 border-aida-green text-aida-green text-xl font-bold disabled:opacity-40"
+        className="w-12 h-12 rounded-xl border-2 border-aida-blue text-aida-blue text-xl font-bold disabled:opacity-40"
         disabled={value <= min}
       >
         −
       </button>
       <div
         aria-live="polite"
-        className="flex-1 text-center text-2xl font-bold tabular-nums py-2.5 rounded-xl bg-aida-greenLight"
+        className="flex-1 text-center text-2xl font-bold tabular-nums py-2.5 rounded-xl bg-aida-blueLight"
       >
         {value}
       </div>
@@ -585,7 +585,7 @@ function NumberStepper({
         type="button"
         onClick={inc}
         aria-label="Tambah"
-        className="w-12 h-12 rounded-xl border-2 border-aida-green text-aida-green text-xl font-bold disabled:opacity-40"
+        className="w-12 h-12 rounded-xl border-2 border-aida-blue text-aida-blue text-xl font-bold disabled:opacity-40"
         disabled={value >= max}
       >
         +
@@ -640,7 +640,7 @@ function ConfirmSelect<T extends string>({
             onClick={() => onChange(o.value)}
             className={`flex-1 py-1.5 rounded-lg text-sm font-semibold transition ${
               value === o.value
-                ? 'bg-aida-green text-white'
+                ? 'bg-aida-blue text-white'
                 : 'bg-black/5 text-aida-ink'
             }`}
           >

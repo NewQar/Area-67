@@ -53,7 +53,7 @@ export default function SplashPage() {
       <div className="mt-12">
         <div
           aria-label="Memuatkan"
-          className="w-8 h-8 rounded-full border-[3px] border-aida-green/20 border-t-aida-green animate-spin"
+          className="w-8 h-8 rounded-full border-[3px] border-aida-blue/20 border-t-aida-blue animate-spin"
         />
       </div>
     </div>

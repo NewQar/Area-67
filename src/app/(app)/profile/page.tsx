@@ -62,7 +62,7 @@ export default function ProfilePage() {
       <header className="flex items-center gap-3">
         <div
           aria-hidden
-          className="w-14 h-14 rounded-full bg-aida-greenLight text-aida-green grid place-items-center text-xl font-bold"
+          className="w-14 h-14 rounded-full bg-aida-blueLight text-aida-blue grid place-items-center text-xl font-bold"
         >
           {initial}
         </div>
@@ -113,7 +113,7 @@ export default function ProfilePage() {
                 aria-pressed={profile.language === lang}
                 className={`min-h-[44px] rounded-xl px-3 py-2 text-sm font-semibold transition ${
                   profile.language === lang
-                    ? 'bg-aida-green text-white'
+                    ? 'bg-aida-blue text-white'
                     : 'bg-black/5 text-aida-ink'
                 }`}
               >

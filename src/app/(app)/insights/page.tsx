@@ -9,7 +9,7 @@ import type { Aid, MatchResult, UserProfile } from '@/lib/types';
 const ALL_AIDS = aidsData as Aid[];
 
 const SPENDING_BREAKDOWN = [
-  { label: 'Barangan dapur', amount: 320, percent: 42, color: 'bg-aida-green' },
+  { label: 'Barangan dapur', amount: 320, percent: 42, color: 'bg-emerald-500' },
   { label: 'Utiliti & bil', amount: 180, percent: 24, color: 'bg-blue-500' },
   { label: 'Pengangkutan', amount: 140, percent: 18, color: 'bg-amber-500' },
   { label: 'Kesihatan', amount: 80, percent: 11, color: 'bg-purple-500' },
@@ -46,7 +46,7 @@ const TONE_META: Record<
 > = {
   tip: { icon: '💡', bg: 'bg-blue-50', ring: 'ring-blue-100', text: 'text-blue-900' },
   warn: { icon: '⏰', bg: 'bg-amber-50', ring: 'ring-amber-100', text: 'text-amber-900' },
-  win: { icon: '🎉', bg: 'bg-aida-greenLight', ring: 'ring-aida-green/20', text: 'text-aida-greenDark' },
+  win: { icon: '🎉', bg: 'bg-emerald-50', ring: 'ring-emerald-100', text: 'text-emerald-900' },
 };
 
 export default function InsightsPage() {
@@ -192,7 +192,7 @@ export default function InsightsPage() {
                   </p>
                   <p className="text-xs text-aida-muted truncate">{a.provider}</p>
                 </div>
-                <span className="shrink-0 text-sm font-semibold text-aida-green">
+                <span className="shrink-0 text-sm font-semibold text-aida-blue">
                   +RM{a.amount.min_myr}
                 </span>
               </div>

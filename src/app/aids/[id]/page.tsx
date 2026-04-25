@@ -16,7 +16,7 @@ const STATUS_META: Record<
 > = {
   eligible: {
     label: 'Anda layak',
-    className: 'bg-aida-greenLight text-aida-greenDark border-aida-green/30',
+    className: 'bg-aida-blueLight text-aida-blueDark border-aida-blue/30',
     icon: '✓',
   },
   partial: {
@@ -26,7 +26,7 @@ const STATUS_META: Record<
   },
   auto: {
     label: 'Auto — tiada permohonan',
-    className: 'bg-aida-greenLight text-aida-greenDark border-aida-green/30',
+    className: 'bg-aida-blueLight text-aida-blueDark border-aida-blue/30',
     icon: '⚡',
   },
 };
@@ -126,7 +126,7 @@ export default function AidDetailPage() {
         )}
 
         {amount && (
-          <div className="mt-4 rounded-2xl bg-gradient-to-br from-aida-green to-aida-greenDark text-white p-4">
+          <div className="mt-4 rounded-2xl bg-gradient-to-br from-aida-blue to-aida-blueDark text-white p-4">
             <p className="text-xs text-white/80 font-medium">Jumlah bantuan</p>
             <p className="mt-1 text-2xl font-bold">{amount}</p>
             <p className="mt-1 text-xs text-white/85">{aid.amount.description}</p>
@@ -157,7 +157,7 @@ export default function AidDetailPage() {
                   className="flex items-baseline justify-between gap-3 text-sm"
                 >
                   <span className="text-aida-ink/80">{t.label}</span>
-                  <span className="font-semibold text-aida-green shrink-0">{t.amount}</span>
+                  <span className="font-semibold text-aida-blue shrink-0">{t.amount}</span>
                 </li>
               ))}
             </ul>
@@ -203,7 +203,7 @@ export default function AidDetailPage() {
               <ul className="mt-3 space-y-1.5">
                 {aid.eligibility_criteria.additional_rules.map((rule, i) => (
                   <li key={i} className="flex gap-2 text-sm text-aida-ink/80">
-                    <span aria-hidden className="text-aida-green">•</span>
+                    <span aria-hidden className="text-aida-blue">•</span>
                     <span>{rule}</span>
                   </li>
                 ))}
@@ -216,7 +216,7 @@ export default function AidDetailPage() {
             <ul className="space-y-1.5">
               {aid.required_documents.map((d, i) => (
                 <li key={i} className="flex gap-2 text-sm">
-                  <span aria-hidden className="text-aida-green">📄</span>
+                  <span aria-hidden className="text-aida-blue">📄</span>
                   <span>{d}</span>
                 </li>
               ))}
@@ -231,7 +231,7 @@ export default function AidDetailPage() {
                 <li key={i} className="flex gap-3 text-sm">
                   <span
                     aria-hidden
-                    className="w-6 h-6 shrink-0 rounded-full bg-aida-green text-white grid place-items-center text-xs font-bold"
+                    className="w-6 h-6 shrink-0 rounded-full bg-aida-blue text-white grid place-items-center text-xs font-bold"
                   >
                     {i + 1}
                   </span>
@@ -240,13 +240,13 @@ export default function AidDetailPage() {
               ))}
             </ol>
             {aid.application.offline_options && aid.application.offline_options.length > 0 && (
-              <div className="mt-3 rounded-xl bg-aida-greenLight/50 border border-aida-green/20 p-3">
-                <p className="text-xs font-semibold text-aida-greenDark mb-1">
+              <div className="mt-3 rounded-xl bg-aida-blueLight/50 border border-aida-blue/20 p-3">
+                <p className="text-xs font-semibold text-aida-blueDark mb-1">
                   Pilihan luar talian
                 </p>
                 <ul className="space-y-0.5">
                   {aid.application.offline_options.map((o, i) => (
-                    <li key={i} className="text-xs text-aida-greenDark">• {o}</li>
+                    <li key={i} className="text-xs text-aida-blueDark">• {o}</li>
                   ))}
                 </ul>
               </div>

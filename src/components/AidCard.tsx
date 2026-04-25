@@ -19,8 +19,8 @@ const STATUS_META: Record<
 > = {
   eligible: {
     label: 'Layak',
-    textClass: 'text-aida-greenDark',
-    cardClass: 'bg-aida-greenLight border-aida-green/20',
+    textClass: 'text-aida-blueDark',
+    cardClass: 'bg-aida-blueLight border-aida-blue/20',
     icon: '✓',
   },
   partial: {
@@ -31,8 +31,8 @@ const STATUS_META: Record<
   },
   auto: {
     label: 'Auto',
-    textClass: 'text-aida-greenDark',
-    cardClass: 'bg-aida-greenLight border-aida-green/20',
+    textClass: 'text-aida-blueDark',
+    cardClass: 'bg-aida-blueLight border-aida-blue/20',
     icon: '⚡',
   },
 };
@@ -81,7 +81,7 @@ export default function AidCard({
             <p className="text-[10px] text-aida-muted leading-none uppercase tracking-wider">
               Nilai
             </p>
-            <p className="mt-1 text-sm font-bold text-aida-green truncate">{amount}</p>
+            <p className="mt-1 text-sm font-bold text-aida-blue truncate">{amount}</p>
           </>
         ) : (
           <p className="text-xs text-aida-muted">Pendaftaran</p>
@@ -118,7 +118,7 @@ export function ProviderLogo({
   return (
     <div
       aria-hidden
-      className={`shrink-0 ${dim} rounded-xl bg-aida-greenLight text-aida-greenDark grid place-items-center font-bold`}
+      className={`shrink-0 ${dim} rounded-xl bg-aida-blueLight text-aida-blueDark grid place-items-center font-bold`}
     >
       {fallback.charAt(0).toUpperCase()}
     </div>

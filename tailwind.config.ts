@@ -6,9 +6,9 @@ const config: Config = {
     extend: {
       colors: {
         aida: {
-          green: '#0a7c4a',
-          greenDark: '#085f3a',
-          greenLight: '#e7f5ee',
+          blue: '#2563eb',
+          blueDark: '#1e40af',
+          blueLight: '#dbeafe',
           ink: '#0e1116',
           muted: '#5b6470',
           bg: '#fafaf7',
