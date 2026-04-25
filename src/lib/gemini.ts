@@ -183,11 +183,9 @@ export async function chatWithAida(
   }
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: 'gemini-flash-latest',
+    model: 'gemini-flash-lite-latest',
     systemInstruction: systemPrompt,
-    // 2.5+ Flash counts hidden reasoning tokens against this budget, so a
-    // small ceiling can truncate the visible reply mid-sentence.
-    generationConfig: { temperature: 0.6, maxOutputTokens: 2048 },
+    generationConfig: { temperature: 0.6, maxOutputTokens: 512 },
   });
 
   const contents = messages.map((m) => ({
