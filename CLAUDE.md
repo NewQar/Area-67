@@ -1,271 +1,325 @@
 # CLAUDE.md — AIDa Project Source of Truth
 
-> **Read this file first, every session, before generating code.** This is the single source of truth for the AIDa project. If anything in this file conflicts with a request, ask before deviating.
+## What is AIDa?
+AIDa (Aid Intelligence & Discovery Assistant) is a PWA (Progressive Web App) that helps low-income Malaysians discover, match, and apply for government aids, zakat, and financial assistance programs they are eligible for but unaware of.
+
+**Hackathon context:** This is a working prototype demo. Prioritize visible, impressive features over completeness. Every decision should serve the demo narrative.
+
+**Demo narrative:** Ahmad, 42, rubber tapper from Kelantan. He opens AIDa, answers 5 questions in Malay, and in 30 seconds discovers he qualifies for 3 aids he never knew existed. He chats with AIDa in Malay and gets a clear answer. That is the story we are telling.
 
 ---
 
-## 1. Project Identity
+## Tech Stack
 
-- **Event**: TNG Digital Finhack 2026 (36-hour hackathon)
-- **Track**: Financial Inclusion
-- **Product Name**: **AIDa** — your personal aid case worker
-- **Tagline**: *"Aid that finds you, not the other way around."*
-- **Prize at stake**: RM 25,000
-
-### Problem in one line
-Eligible Malaysians leave aid on the table because they can't find it, understand it, or access it without help.
-
-### Our solution in one line
-A mobile-first, AI-powered companion that **discovers, matches, tracks, and walks low-income Malaysians through every aid, zakat, and subsidy they qualify for** — with a WhatsApp-style chatbot in BM, EN, 中文, and தமிழ்.
-
-### Non-negotiable user principles
-1. **Low digital literacy first.** If a screen needs explaining, redesign it.
-2. **No dead ends.** Every screen tells the user what to do next.
-3. **The chatbot is the safety net.** Stuck anywhere? Tap AIDa.
-4. **Trust > features.** No dark patterns, no upsells, plain language.
-5. **Multilingual from day one.** BM and EN are baseline; 中文 + தமிழ் are first-class.
+| Layer | Technology | Notes |
+|-------|-----------|-------|
+| Frontend | Next.js 14 (App Router) + TypeScript | Installable PWA via `public/manifest.json` (next-pwa was dropped — see Setup Notes) |
+| Styling | Tailwind CSS | Mobile-first, large text, high contrast |
+| Backend | Next.js API Routes | Keep it simple, no separate BE needed |
+| Database | PostgreSQL via Prisma ORM | Hosted on AWS RDS. Schema + seed exist; demo flow does not actually hit the DB at runtime (localStorage-only). |
+| AI Matching | Google Gemini API (`gemini-flash-latest`, free tier) | For aid matching and gap analysis |
+| AI Chatbot | Google Gemini API (`gemini-flash-latest`, free tier) | Originally Claude in the spec; swapped to Gemini after Anthropic credits ran out. Same UX. |
+| Deployment | AWS Amplify (primary) | Auto-deploy from GitHub |
+| AI Inference | Alibaba Cloud PAI/Model Studio | Secondary AI, Malay NLP justification |
+| CDN | Alibaba Cloud CDN | Asset delivery for Malaysia region |
 
 ---
 
-## 2. Six Core Features (memorize these)
-
-| # | Feature | One-liner | Acquisition / Retention |
-|---|---|---|---|
-| 1 | **Educate / Access** | Browsable directory of every aid, with criteria + step-by-step | Acquisition |
-| 2 | **Matching Assistant** | AI matches user profile to aids, identifies criteria gaps, suggests next steps | Acquisition |
-| 3 | **Aid Tracker** | Track applied / eligible-but-not-applied / renewals due, with document checklist | Retention |
-| 4 | **Aid Connectivity** | Deep links + step-by-step walkthroughs to the official application portal | Retention |
-| 5 | **AIDa Chatbot** | WhatsApp-style case worker; multilingual; can guide inside or outside the app | Retention |
-| 6 | **Insight & Analysis** | Aggregate (anonymized) data → curated programs + government policy input | Retention + B2G value |
-
-### Monetization (back-pocket pitch)
-Approved aid → TNG eWallet → spent at SME merchants in TNG-curated SARA-style program → MDR/transaction fee revenue + SME economic uplift + dignity-preserving spend control. **Three-sided win**: user, SME, TNGD.
-
----
-
-## 3. Judging Criteria → How We Score
-
-The judging criteria are: **AI & Intelligent Systems, Technical Implementation, Multi-Cloud Service Usage, Impact & Feasibility, Presentation & Teamwork.**
-
-| Criterion | How AIDa wins it |
-|---|---|
-| AI & Intelligent Systems | Two distinct AI surfaces: (a) **matching engine** that reasons over user profile + aid criteria + identifies gaps, (b) **AIDa chatbot** — multilingual, RAG-grounded on aid database, role-play as case worker. |
-| Technical Implementation | Production-shipped PWA, real deployed URL, real DB, real auth, observability dashboard, CI/CD. **Not a Figma demo.** |
-| Multi-Cloud Service Usage | **AWS** = AI + compute + storage. **Alibaba Cloud** = data layer + analytics + edge delivery. Documented justification (see §6). |
-| Impact & Feasibility | Real Malaysian aids (STR 2026, SARA, eKasih, Zakat, JKM, MySalam, OKU, BIB) loaded with real criteria. Calculated TAM. Day-1 partnership story with TNGD. |
-| Presentation & Teamwork | Live demo on real device. Each member owns a slot in the pitch. Documentation quality reflected in this folder. |
-
----
-
-## 4. Tech Stack (locked)
-
-### Frontend
-- **Framework**: Next.js 15 (App Router) as a **PWA**
-- **Styling**: Tailwind CSS + shadcn/ui
-- **State**: Zustand (lightweight) + TanStack Query (server state)
-- **i18n**: `next-intl` — strings in BM, EN, ZH, TA from day 1 (BM + EN done, ZH + TA via auto-translate fallback acceptable for demo)
-- **Forms**: react-hook-form + zod
-- **Icons**: lucide-react
-- **PWA**: `next-pwa` with offline shell + installable manifest
-
-### Backend
-- **API**: Next.js Route Handlers (`/api/*`) for the MVP — **no separate BE service**. Speed > microservices in a hackathon.
-- **Auth**: Supabase Auth (magic link + phone OTP) **OR** Clerk if Supabase phone OTP gives trouble. Default: Supabase.
-- **Database**: Supabase Postgres (hosted, free tier, includes Auth + Row-Level Security)
-- **ORM**: Drizzle ORM (lightweight, type-safe, hackathon-friendly)
-- **File storage**: Supabase Storage for uploaded documents
-- **Background jobs**: Postgres triggers for the MVP; if time permits, Trigger.dev free tier
-
-### AI Layer (this is critical — read carefully)
-**Primary AI provider: AWS Bedrock with Anthropic Claude.**
-
-- **Why not Gemini free tier?** Bedrock counts as cloud usage and ties directly to a judging criterion (Multi-Cloud). Free tier API calls do not. We have USD 250 in AWS credits — Bedrock pay-per-token is cheap enough that this lasts the whole hackathon comfortably.
-- **Model selection on Bedrock**:
-  - `claude-haiku-4-5` for the chatbot (fast, cheap, good at multilingual)
-  - `claude-sonnet-4-5` for the matching engine (better reasoning over criteria)
-- **Fallback**: If Bedrock model access takes too long to enable in `ap-southeast-1` (Singapore), pivot to Gemini API — but Bedrock is plan A.
-- **Pattern**: All AI calls go through one server-side helper `lib/ai/bedrock.ts` so swapping providers is one file.
-- **RAG**: Aid catalog is small (~50–100 entries). Embed and store in Postgres with `pgvector`. No external vector DB needed.
-
-### Cloud (multi-cloud — see §6 for the full breakdown)
-- **AWS** (USD 250 credit, ap-southeast-5 Malaysia + ap-southeast-1 Singapore for Bedrock)
-- **Alibaba Cloud** (USD 300 credit, ap-southeast-3 Malaysia only)
-
----
-
-## 5. Repository Layout
+## Project Structure
 
 ```
-aida/
-├── CLAUDE.md                    ← you are here, read first
-├── README.md                    ← public-facing readme for judges + GitHub
-├── docs/
-│   ├── research/                ← BA outputs (aid catalog, personas)
-│   ├── cloud/                   ← DevOps runbooks
-│   ├── dev/                     ← Dev guides + ADRs
-│   ├── design/                  ← UX flows, screen inventory
-│   └── business/                ← Pitch deck source, monetization model
-├── apps/
-│   └── web/                     ← Next.js PWA (frontend + API)
-│       ├── app/                 ← App Router
-│       ├── components/
-│       ├── lib/
-│       │   ├── ai/              ← Bedrock client, prompts, matching engine
-│       │   ├── db/              ← Drizzle schema, migrations
-│       │   └── i18n/
-│       ├── public/
-│       └── messages/            ← i18n JSON (en.json, ms.json, zh.json, ta.json)
-├── packages/
-│   └── aid-catalog/             ← The seed data (JSON) of all Malaysian aids
-└── infra/
-    ├── aws/                     ← Terraform / CDK for AWS resources
-    └── alicloud/                ← Terraform for Alibaba resources
+Area-67/
+├── CLAUDE.md                  ← You are here (source of truth)
+├── .env.local                 ← API keys (never commit this)
+├── prisma/
+│   ├── schema.prisma          ← DB schema
+│   └── seed.ts                ← Seed data (aids list)
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx         ← Root layout (PWA meta, fonts)
+│   │   ├── page.tsx           ← Landing / entry point
+│   │   ├── onboarding/
+│   │   │   └── page.tsx       ← 3-step onboarding form
+│   │   ├── dashboard/
+│   │   │   └── page.tsx       ← Aid matching results
+│   │   ├── chat/
+│   │   │   └── page.tsx       ← AIDa chatbot screen
+│   │   └── api/
+│   │       ├── match/
+│   │       │   └── route.ts   ← Gemini aid matching endpoint
+│   │       └── chat/
+│   │           └── route.ts   ← Gemini chatbot endpoint
+│   ├── components/
+│   │   ├── OnboardingForm.tsx
+│   │   ├── AidCard.tsx
+│   │   └── ChatInterface.tsx
+│   ├── lib/
+│   │   ├── gemini.ts          ← Gemini API client (matching + chat + system prompt)
+│   │   ├── types.ts           ← Shared TS types (UserProfile, Aid, MatchResult)
+│   │   └── db.ts              ← Prisma client singleton (seed-only for demo)
+│   └── data/
+│       └── aids.json          ← Static aids data (read by /api/match)
+└── public/
+    ├── manifest.json          ← PWA manifest
+    └── icons/                 ← App icons (192/512 PNGs to be added)
 ```
 
 ---
 
-## 6. Multi-Cloud Architecture (read this carefully — judges WILL ask)
+## Core Features to Build (Priority Order)
 
-### Principle: each cloud earns its place
-Don't split things artificially. Each cloud has services it's genuinely better at — that's our justification.
+### 1. Onboarding Form (HIGHEST PRIORITY)
+- 3 steps max, one question per screen
+- Step 1: Name + Language preference (BM / EN / 中文 / தமிழ்)
+- Step 2: Age + State + Household size (big number pickers, not text inputs)
+- Step 3: Monthly income (big slider or large button options)
+- Progress bar at top
+- Large 18px+ text, big tap targets (min 48px height buttons)
+- "Seterusnya" (Next) button — not "Submit" or "Continue"
+- Store in localStorage only (no auth, no DB write — see "What NOT to build")
 
-### AWS owns: AI + the user-facing application
-- **Amazon Bedrock** (`ap-southeast-1` Singapore — Bedrock isn't in Malaysia region yet) — Claude Haiku + Sonnet for chatbot and matching
-- **Amazon S3** (`ap-southeast-5` Malaysia) — User document uploads (MyKad photo, payslip)
-- **Amazon Textract** (`ap-southeast-1`) — OCR on uploaded MyKad / utility bills to auto-fill the onboarding form (huge UX win for low-literacy users)
-- **Amazon Comprehend** (`ap-southeast-1`) — PII detection + redaction before logging
-- **Amplify Hosting** OR **Vercel** for the PWA — **(we lean Vercel for speed; if a judge asks, Vercel for FE, AWS for AI/data plane is a legit modern split)**
-- **CloudWatch** — logs, alarms
+### 2. Aid Matching Screen (HIGHEST PRIORITY)
+- Show 3–5 matched aid cards
+- Each card: Aid name (large), amount (bold, green), match reason (1 line), "Mohon Sekarang" button
+- AI reasoning section: collapsible "Mengapa anda layak?" with Gemini's explanation
+- Unmatched aids section: "Hampir layak" (Almost eligible) — show what's missing
+- This is the WOW moment — make it feel magical
 
-### Alibaba Cloud owns: data, analytics, and Malaysian-region edge
-- **ApsaraDB RDS for PostgreSQL** (`ap-southeast-3` Malaysia) — **primary application DB**, in-country for data residency story (this matters for a financial inclusion pitch)
-- **Object Storage Service (OSS)** — backup of S3 documents + static assets
-- **AnalyticDB** OR **MaxCompute** — the **Insight & Analysis** feature. Aggregate anonymized application data → policy dashboard for Gov / TNGD partner view
-- **CDN** — serve the PWA static assets to Malaysian users from edge nodes in-country
-- **Quick BI** — pre-built dashboard for the demo (saves us building one)
+### 3. AIDa Chatbot (HIGH PRIORITY)
+- WhatsApp-style bubble UI (green bubbles for AIDa, white for user)
+- Suggested quick-reply chips below input: "Apa itu BSH?", "Macam mana nak mohon?", "Bila duit masuk?"
+- Multilingual — detect language from onboarding preference
+- AIDa avatar: simple icon, friendly name
+- Powered by Gemini API (`gemini-flash-latest`) with a system prompt that knows the user's profile and matched aids
 
-> ⚠️ Per the briefing: MaxCompute + DataWorks are restricted on the hackathon Alibaba accounts. **Use AnalyticDB for PostgreSQL instead** — it's a managed columnar DB that works for the analytics story without those restrictions. If even AnalyticDB isn't accessible, fall back to a simple read-replica of RDS Postgres with a materialized view + Quick BI.
-
-### The justification line for the pitch
-> "AWS gives us the best AI primitives — Bedrock with Claude for reasoning, Textract for OCR. Alibaba Cloud gives us in-country data residency on Malaysian soil through ap-southeast-3, plus a turnkey analytics stack for the policy-insights feature. Each cloud earns its place; neither is decoration."
+### 4. Aid Tracker (MEDIUM — demo slide only if no time)
+- Simple list: Applied / Eligible-not-applied / Upcoming renewal
+- Can be mocked with static data for demo
 
 ---
 
-## 7. Data Model (v1)
+## Design Principles (NON-NEGOTIABLE)
+
+These are for a user group with LOW digital literacy. Every design decision must serve them.
+
+1. **Text size minimum 16px body, 20px+ for key info, 24px+ for amounts**
+2. **Buttons minimum 48px tall, full-width on mobile**
+3. **One primary action per screen** — never two competing CTAs
+4. **Icons + text always together** — never icon-only
+5. **High contrast** — dark text on light background, no grey-on-grey
+6. **Bahasa Malaysia as default** — English as secondary
+7. **No jargon** — "Bantuan Wang" not "Financial Assistance Disbursement"
+8. **Progress is always visible** — show where they are in any multi-step flow
+9. **Error messages in plain language** — "Cuba lagi" not "Error 422"
+10. **Confirmation before any action** — never silent submissions
+
+---
+
+## API Keys Needed (.env.local)
+
+```bash
+# AI — only Gemini is required for the demo flow
+GEMINI_API_KEY=your_key_here
+
+# Database — optional. Schema + seed exist but the demo flow uses localStorage,
+# so the app runs end-to-end without this set.
+DATABASE_URL=postgresql://user:password@host:5432/aida
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Dev-only escape hatch for corporate proxies / antivirus that intercept HTTPS.
+# Without this Node's fetch rejects the MITM cert and the Gemini SDK throws
+# "fetch failed" with no cause. Do NOT ship to prod.
+# NODE_TLS_REJECT_UNAUTHORIZED=0
+```
+
+Get Gemini key: https://aistudio.google.com/app/apikey (free)
+
+---
+
+## Setup Notes (gotchas we hit during build)
+
+These are non-obvious things future-you (or another dev) will trip on. Read before starting fresh.
+
+- **Use pnpm, not npm.** This repo was scaffolded on Node 25 + npm 11, where npm's Arborist crashes on this dep tree (`Cannot read properties of null (reading 'matches')`). pnpm installs cleanly. Use `pnpm install` / `pnpm dev` / `pnpm build`.
+- **`next-pwa` was removed from the spec.** Same npm bug above was triggered by next-pwa's old transitive tree. The manifest + theme color tags still give installable-PWA behavior; the offline service worker is the only thing missing. Re-add later if needed.
+- **Restart `pnpm dev` after editing `.env.local`.** Next reads env vars once at server start. Symptoms of forgetting: chat returns the offline fallback even though your key is set.
+- **Gemini model name: `gemini-flash-latest`.** `gemini-1.5-flash` was retired from the v1beta endpoint in April 2026. Both `/api/match` and `/api/chat` use `gemini-flash-latest`, which auto-tracks the current free-tier Flash.
+- **`maxOutputTokens` must be ≥ 2048** for chat. Gemini 2.5+ Flash counts hidden reasoning tokens against the budget; with 400 you get truncated mid-sentence replies. Set in `src/lib/gemini.ts`.
+- **"fetch failed" from inside Next dev** = corporate MITM proxy intercepting HTTPS. The SDK wraps the underlying TLS error as a generic fetch failure with no `cause`. Fix by adding `NODE_TLS_REJECT_UNAUTHORIZED=0` to `.env.local` (dev only) or installing the corp CA via `NODE_EXTRA_CA_CERTS`.
+- **Both AI routes have offline fallbacks.** `/api/match` uses a deterministic rule-based matcher if Gemini is unreachable; `/api/chat` returns a tagged error message (`[no API key]` or `[API error]`). The demo flow always renders something, never a blank screen.
+- **Next.js was bumped to 14.2.35** for a security patch flagged by pnpm during install. App Router APIs unchanged from 14.2.
+
+---
+
+## Aid Matching Logic
+
+The matching uses Gemini with a structured prompt. User profile is sent with the aids list. Gemini returns:
+1. Matched aids with % confidence and reason
+2. Near-miss aids with what's missing
+3. Suggested next steps
+
+**Gemini system prompt (in `/src/lib/gemini.ts`):**
+```
+You are an aid eligibility assistant for Malaysia. Given a user profile and a list of aid programs, return a JSON object with:
+- matched: array of aids the user qualifies for, each with { id, reason, confidence }
+- nearMiss: array of aids they almost qualify for, each with { id, gap, suggestion }
+- nextSteps: array of 2-3 actionable suggestions in the user's language
+
+User profile: {profile}
+Available aids: {aids}
+
+Respond ONLY with valid JSON. No markdown, no explanation outside the JSON.
+```
+
+---
+
+## AIDa Chatbot System Prompt
+
+The chatbot knows the user's profile and their matched aids. Lives in `src/lib/gemini.ts` as `buildAidaSystemPrompt(profile, matchedAids)`, called from `/src/app/api/chat/route.ts`:
 
 ```
-User
-  id, phone, email, language, created_at
-  
-UserProfile  (the "matching key")
-  user_id, full_name, ic_number (encrypted), dob, state, district,
-  household_income_band, household_size, num_children, num_elderly,
-  employment_status, religion, disability_status, ekasih_registered,
-  is_single_parent, education_level, current_aids (jsonb)
+You are AIDa, a warm and helpful Malaysian government aid assistant. You speak like a friendly case worker, not a robot.
 
-Aid  (the catalog — seeded by BAs)
-  id, slug, name_ms, name_en, name_zh, name_ta,
-  provider (e.g. "LHDN", "JKM Selangor", "LZS"),
-  category (cash | groceries | medical | education | housing | business),
-  is_recurring (bool), application_window (jsonb),
-  amount_min, amount_max, amount_description,
-  eligibility_criteria (jsonb structured),
-  required_documents (text[]),
-  application_url, application_steps (jsonb),
-  source_urls (text[]), last_verified_at
+User profile: {profile}
+Their matched aids: {matchedAids}
 
-Application  (one row per user × aid attempt)
-  id, user_id, aid_id, status (eligible | applied | approved | rejected | renewal_due),
-  applied_at, decision_at, next_action, notes
-
-ChatMessage
-  id, user_id, role (user | aida), content, lang, created_at,
-  metadata (jsonb — citations, suggested actions)
-
-Document
-  id, user_id, type (mykad | payslip | utility_bill | other),
-  s3_key, ocr_extracted (jsonb), uploaded_at
+Rules:
+- Default to Bahasa Malaysia unless the user writes in another language
+- Keep responses SHORT — 2-4 sentences max
+- Use simple words — imagine explaining to someone's grandmother
+- If asked about an aid they qualify for, give the application link and next step
+- If asked something you don't know, say "Saya akan semak untuk awak" (I'll check for you)
+- Never use jargon or bureaucratic language
+- Be warm and encouraging — many users feel shame asking for help
 ```
 
-Row-Level Security: every table that has `user_id` enforces `user_id = auth.uid()`.
+---
+
+## Seed Data (Aids Programs)
+
+The BA team is researching full details. For dev, use this starter data in `prisma/seed.ts` or `src/data/aids.json`:
+
+```json
+[
+  {
+    "id": "bsh-2024",
+    "name": "Sumbangan Tunai Rahmah (STR)",
+    "nameEn": "Rahmah Cash Contribution",
+    "amount": 1000,
+    "frequency": "yearly",
+    "criteria": {
+      "maxIncome": 2500,
+      "minHouseholdSize": 1,
+      "citizenship": "malaysian"
+    },
+    "description": "Bantuan tunai tahunan untuk isi rumah berpendapatan rendah",
+    "applyUrl": "https://str.hasil.gov.my",
+    "provider": "Kerajaan Persekutuan"
+  },
+  {
+    "id": "zakat-asnaf",
+    "name": "Zakat Asnaf (Fakir & Miskin)",
+    "nameEn": "Zakat for the Poor",
+    "amount": 300,
+    "frequency": "monthly",
+    "criteria": {
+      "maxIncome": 1500,
+      "religion": "islam",
+      "minHouseholdSize": 1
+    },
+    "description": "Bantuan bulanan dari tabung zakat negeri",
+    "applyUrl": "https://www.zakat.com.my",
+    "provider": "Majlis Agama Islam Negeri"
+  },
+  {
+    "id": "bantuan-oku",
+    "name": "Bantuan OKU",
+    "nameEn": "Disabled Person Assistance",
+    "amount": 450,
+    "frequency": "monthly",
+    "criteria": {
+      "hasOKUCard": true,
+      "maxIncome": 3000
+    },
+    "description": "Bantuan bulanan untuk orang kurang upaya berdaftar",
+    "applyUrl": "https://www.jkm.gov.my",
+    "provider": "Jabatan Kebajikan Masyarakat (JKM)"
+  },
+  {
+    "id": "ekasih",
+    "name": "Program eKasih",
+    "nameEn": "eKasih Programme",
+    "amount": 500,
+    "frequency": "quarterly",
+    "criteria": {
+      "maxIncome": 2000,
+      "registeredPoverty": true
+    },
+    "description": "Bantuan untuk isi rumah dalam pangkalan data kemiskinan",
+    "applyUrl": "https://ekasih.gov.my",
+    "provider": "Unit Penyelarasan Pelaksanaan (ICU)"
+  },
+  {
+    "id": "bpn-kelantan",
+    "name": "Bantuan Prihatin Negeri Kelantan",
+    "nameEn": "Kelantan State Care Aid",
+    "amount": 200,
+    "frequency": "yearly",
+    "criteria": {
+      "state": "kelantan",
+      "maxIncome": 3000
+    },
+    "description": "Bantuan khas untuk rakyat Kelantan",
+    "applyUrl": "https://www.kelantan.gov.my",
+    "provider": "Kerajaan Negeri Kelantan"
+  }
+]
+```
 
 ---
 
-## 8. The 36-Hour Plan (timeboxed)
+## Git Workflow
 
-| Hour block | Focus | Owner |
-|---|---|---|
-| 0–3 | Kickoff, account setup, repo init, BA research starts | Everyone |
-| 3–8 | Aid catalog v1 (top 15 aids) seeded; auth + onboarding flow shell; cloud accounts ready | BA + Dev + DevOps |
-| 8–16 | Matching engine working on 15 aids; chatbot v1 (EN+BM); UI for top 5 screens | Dev (with PM) |
-| 16–22 | Tracker + Connectivity + Documents/OCR; deploy to staging URL | Dev + DevOps |
-| 22–28 | Polish, multilingual, analytics dashboard, **end-to-end demo dry run** | Everyone |
-| 28–32 | Pitch deck, demo video recording, deployment hardening | BA + PM |
-| 32–36 | Buffer, GitHub README, submission form fill, second dry run | Everyone |
+```bash
+# Before starting any feature
+git pull origin main
 
-**Hard rule**: by Hour 22 we must have a publicly reachable URL. Anything still broken after Hour 22 gets cut, not fixed.
+# After each screen is done
+git add .
+git commit -m "feat: [screen name] - [what was done]"
+git push origin main
 
----
-
-## 9. Working with Claude Code
-
-When you (the developer) prompt Claude Code, follow these rules to keep the codebase consistent:
-
-1. **Always start a session with**: `Read CLAUDE.md and the relevant files in /docs/dev before making changes.`
-2. **Constraint reminders to put in every big prompt**:
-   - "Use Next.js App Router, server components by default."
-   - "Use Drizzle, not Prisma. Use shadcn/ui components, not custom CSS."
-   - "All AI calls go through `lib/ai/bedrock.ts`. Don't import the AWS SDK directly elsewhere."
-   - "All user-facing strings must be in `messages/*.json`, not hardcoded."
-3. **Test as you go**: ask Claude to write a quick smoke test or curl example after each major piece. We can't afford "works on my laptop" the morning of the demo.
-4. **Don't let Claude balloon the stack**. If it suggests Redis, Kafka, microservices — say no. Hackathon scope.
-5. **Commit often, commit small.** Every working feature = a commit. We will not have time to debug a 4-hour mega-commit.
-
-See `docs/dev/DEVELOPER_GUIDE.md` for the full developer playbook.
+# Branch names
+feat/onboarding
+feat/aid-matching
+feat/chatbot
+```
 
 ---
 
-## 10. Submission Checklist (do not skip)
+## Demo Script (for presentation)
 
-Per the briefing image, we submit via Google Form with these deliverables:
+1. Open app on phone (or phone-sized browser window)
+2. Show landing screen — clean, Malay, one big button "Mula Sekarang"
+3. Go through 3-step onboarding as Ahmad (42, Kelantan, RM1,200/month, 4 household)
+4. Hit matching screen — pause here, let the AI result load visibly
+5. Say: "In seconds, AIDa found 3 programs Ahmad qualifies for, worth up to RM1,700/month"
+6. Open chatbot, type "macam mana nak mohon STR?" in Malay
+7. Show AIDa responding in Malay with steps
+8. Show architecture slide — AWS + Alibaba Cloud
 
-- [ ] Team Name
-- [ ] Project Name (AIDa), Description, Track (Financial Inclusion)
-- [ ] Implementation & Inspiration writeup
-- [ ] **Pitch Deck Link** (Google Slides, public view)
-- [ ] **Demo Video Link** (YouTube unlisted, ≤ 3 min)
-- [ ] **Deployment Link** (live URL, working on mobile)
-- [ ] **GitHub Repository Link** (public, with README)
-
-The pitch deck must hit all 5 judging criteria explicitly. The demo video must show a real user journey on a phone, not a screen recording of localhost.
-
----
-
-## 11. Key Decisions Already Made (don't relitigate during the hack)
-
-These were debated and locked. Don't waste 30 minutes redebating at hour 14.
-
-- ✅ PWA, not native app
-- ✅ Next.js full-stack, not separate FE + BE
-- ✅ AWS Bedrock + Claude for AI, not Gemini
-- ✅ Supabase for auth + DB primary
-- ✅ Alibaba RDS Postgres for the data-residency story (replicated from Supabase OR primary — see DevOps runbook for final call)
-- ✅ Tailwind + shadcn, no custom design system
-- ✅ Drizzle, not Prisma
-- ✅ English + Bahasa Malaysia at parity. ZH + TA acceptable as auto-translated for v1
-- ✅ Demo persona: **"Mak Cik Aminah, 58, single, lives in Klang, household income RM1,800/month, has 2 dependent children"** — every screenshot in the pitch uses her
+**Time target: 3 minutes demo, 2 minutes Q&A**
 
 ---
 
-## 12. Glossary (so judges and team agree)
+## What NOT to build (scope cuts for hackathon)
 
-- **STR** — Sumbangan Tunai Rahmah (federal cash aid)
-- **SARA** — Sumbangan Asas Rahmah (basic needs MyKad credit)
-- **eKasih** — National Poverty Database (the registry)
-- **B40** — Bottom 40% of Malaysian household income
-- **Asnaf** — One of 8 categories eligible for Zakat
-- **Had Kifayah** — Minimum living threshold used by Lembaga Zakat
-- **JKM** — Jabatan Kebajikan Masyarakat (welfare dept)
-- **LZS / PPZ / MAIWP** — State zakat boards (Selangor / WPKL / Federal Territory)
-- **OKU** — Orang Kurang Upaya (persons with disabilities)
-- **MDR** — Merchant Discount Rate (transaction fee, our monetization vehicle)
+- ❌ User authentication / login (use localStorage)
+- ❌ Real document upload
+- ❌ Payment / wallet integration (mention in slides only)
+- ❌ Full aid tracker (show as coming soon)
+- ❌ Admin dashboard
+- ❌ Real-time notifications
+- ❌ Full multilingual i18n (Malay + English sufficient for demo)

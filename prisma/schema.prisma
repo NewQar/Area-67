@@ -1,0 +1,55 @@
+// AIDa — Prisma schema
+// Hackathon scope: only what we need to power the demo flow.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  language      String   @default("ms") // ms | en | zh | ta
+  age           Int
+  state         String
+  householdSize Int
+  monthlyIncome Int
+  citizenship   String   @default("malaysian")
+  hasOKUCard    Boolean  @default(false)
+  religion      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  applications Application[]
+}
+
+model Aid {
+  id          String  @id
+  name        String
+  nameEn      String
+  amount      Int
+  frequency   String // yearly | monthly | quarterly | one-off
+  description String
+  applyUrl    String
+  provider    String
+  criteria    Json
+
+  applications Application[]
+}
+
+model Application {
+  id        String   @id @default(cuid())
+  userId    String
+  aidId     String
+  status    String   @default("eligible") // eligible | applied | approved | rejected
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  aid  Aid  @relation(fields: [aidId], references: [id])
+
+  @@unique([userId, aidId])
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "bsh-2024",
+    "name": "Sumbangan Tunai Rahmah (STR)",
+    "nameEn": "Rahmah Cash Contribution",
+    "amount": 1000,
+    "frequency": "yearly",
+    "criteria": {
+      "maxIncome": 2500,
+      "minHouseholdSize": 1,
+      "citizenship": "malaysian"
+    },
+    "description": "Bantuan tunai tahunan untuk isi rumah berpendapatan rendah",
+    "applyUrl": "https://str.hasil.gov.my",
+    "provider": "Kerajaan Persekutuan"
+  },
+  {
+    "id": "zakat-asnaf",
+    "name": "Zakat Asnaf (Fakir & Miskin)",
+    "nameEn": "Zakat for the Poor",
+    "amount": 300,
+    "frequency": "monthly",
+    "criteria": {
+      "maxIncome": 1500,
+      "religion": "islam",
+      "minHouseholdSize": 1
+    },
+    "description": "Bantuan bulanan dari tabung zakat negeri",
+    "applyUrl": "https://www.zakat.com.my",
+    "provider": "Majlis Agama Islam Negeri"
+  },
+  {
+    "id": "bantuan-oku",
+    "name": "Bantuan OKU",
+    "nameEn": "Disabled Person Assistance",
+    "amount": 450,
+    "frequency": "monthly",
+    "criteria": {
+      "hasOKUCard": true,
+      "maxIncome": 3000
+    },
+    "description": "Bantuan bulanan untuk orang kurang upaya berdaftar",
+    "applyUrl": "https://www.jkm.gov.my",
+    "provider": "Jabatan Kebajikan Masyarakat (JKM)"
+  },
+  {
+    "id": "ekasih",
+    "name": "Program eKasih",
+    "nameEn": "eKasih Programme",
+    "amount": 500,
+    "frequency": "quarterly",
+    "criteria": {
+      "maxIncome": 2000,
+      "registeredPoverty": true
+    },
+    "description": "Bantuan untuk isi rumah dalam pangkalan data kemiskinan",
+    "applyUrl": "https://ekasih.gov.my",
+    "provider": "Unit Penyelarasan Pelaksanaan (ICU)"
+  },
+  {
+    "id": "bpn-kelantan",
+    "name": "Bantuan Prihatin Negeri Kelantan",
+    "nameEn": "Kelantan State Care Aid",
+    "amount": 200,
+    "frequency": "yearly",
+    "criteria": {
+      "state": "kelantan",
+      "maxIncome": 3000
+    },
+    "description": "Bantuan khas untuk rakyat Kelantan",
+    "applyUrl": "https://www.kelantan.gov.my",
+    "provider": "Kerajaan Negeri Kelantan"
+  }
+]
