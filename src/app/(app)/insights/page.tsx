@@ -23,22 +23,22 @@ const ADVICE: Array<{
   title: string;
   body: string;
 }> = [
-  {
-    tone: 'win',
-    title: 'Anda menjimatkan RM320 bulan ini',
-    body: 'Penggunaan SARA untuk barangan dapur membantu anda kurangkan perbelanjaan tunai. Teruskan!',
-  },
-  {
-    tone: 'tip',
-    title: 'Cuba elakkan transaksi tarik tunai',
-    body: 'Kredit MyKasih lebih jimat — tiada caj tarik tunai dan diskaun harga di kedai berdaftar.',
-  },
-  {
-    tone: 'warn',
-    title: 'STR akan dikreditkan ~20 Januari',
-    body: 'Berdasarkan rekod, STR Fasa 1 akan masuk dalam ~30 hari. Sediakan akaun bank aktif.',
-  },
-];
+    {
+      tone: 'win',
+      title: 'Anda menjimatkan RM320 bulan ini',
+      body: 'Penggunaan SARA untuk barangan dapur membantu anda kurangkan perbelanjaan tunai. Teruskan!',
+    },
+    {
+      tone: 'tip',
+      title: 'Cuba elakkan transaksi tarik tunai',
+      body: 'Kredit MyKasih lebih jimat — tiada caj tarik tunai dan diskaun harga di kedai berdaftar.',
+    },
+    {
+      tone: 'warn',
+      title: 'STR akan dikreditkan ~20 Januari',
+      body: 'Berdasarkan rekod, STR Fasa 1 akan masuk dalam ~30 hari. Sediakan akaun bank aktif.',
+    },
+  ];
 
 const TONE_META: Record<
   AdviceTone,
@@ -124,7 +124,7 @@ export default function InsightsPage() {
       <section className="mt-6">
         <div className="flex items-baseline justify-between mb-3">
           <h2 className="text-base font-bold">Cadangan AIDa</h2>
-          <span className="text-xs text-aida-muted">3 wawasan</span>
+          <span className="text-xs text-aida-muted"></span>
         </div>
         <div className="space-y-2.5">
           {ADVICE.map((a, i) => {
