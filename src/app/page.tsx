@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+
+const ASSET_BASE = process.env.NEXT_PUBLIC_ASSETS_URL ?? '';
 
 export default function SplashPage() {
   const router = useRouter();
@@ -33,12 +34,11 @@ export default function SplashPage() {
             enter ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
           }`}
         >
-          <Image
-            src="/logo/aida.png"
+          <img
+            src={`${ASSET_BASE}/logo/aida.png`}
             alt="AIDa"
             width={120}
             height={120}
-            priority
             className="w-28 h-28 object-contain drop-shadow-lg"
           />
         </div>

@@ -1,3 +1,5 @@
+const ASSET_BASE = process.env.NEXT_PUBLIC_ASSETS_URL ?? '';
+
 const LOGO_BY_AID_ID: Record<string, string> = {
   'str-2026': 'lhdn.png',
   'sara-2026': 'mykasih.png',
@@ -18,5 +20,5 @@ const LOGO_BY_AID_ID: Record<string, string> = {
 
 export function getAidLogo(aidId: string): string | null {
   const file = LOGO_BY_AID_ID[aidId];
-  return file ? `/logo/${file}` : null;
+  return file ? `${ASSET_BASE}/logo/${file}` : null;
 }

@@ -18,7 +18,7 @@ AIDa (Aid Intelligence & Discovery Assistant) is a PWA (Progressive Web App) tha
 | Frontend | Next.js 14 (App Router) + TypeScript | Installable PWA via `public/manifest.json` (next-pwa was dropped — see Setup Notes) |
 | Styling | Tailwind CSS | Mobile-first, standard text sizing (see Design Principles), high contrast |
 | Backend | Next.js API Routes | Keep it simple, no separate BE needed |
-| Database | PostgreSQL via Prisma ORM | Hosted on AWS RDS. Schema + seed exist; demo flow does not actually hit the DB at runtime (localStorage-only). |
+| Database | PostgreSQL via Prisma ORM | Hosted on AWS RDS (multi-cloud story — Alicloud-hosted Next.js reads cross-cloud). Only `/aids` browse page queries the DB; matcher / chat / dashboard / `/aids/[id]` still read `aids.json` directly. Falls back to `aids.json` when DB is unset or unreachable. |
 | AI Matching | Google Gemini API (`gemini-flash-lite-latest`, paid tier) | For aid matching and gap analysis. Free tier capped us at 20 RPD which we burned through in testing — switched to paid (MYR 40 prepaid credit on the Default Gemini Project as of 2026-04-25). Realistic demo cost is ~$0.01 per full session. Both routes moved off `gemini-flash-latest` to **lite** because lite skips the hidden reasoning step that 2.5 Flash spends on every turn, ~halving latency on our lookup-and-rephrase workload. |
 | AI Chatbot | Google Gemini API (`gemini-flash-lite-latest`, paid tier) | Originally Claude in the spec; swapped to Gemini after Anthropic credits ran out. Same model + key as matching — shares the project quota. |
 | Deployment | AWS Amplify (primary) | Auto-deploy from GitHub |
@@ -36,7 +36,7 @@ Area-67/
 ├── research/                  ← BA1 source material (aids.json + .docx integration ref)
 ├── prisma/
 │   ├── schema.prisma          ← DB schema (Aid is id+slug+data:Json — see Setup Notes)
-│   └── seed.ts                ← Seed script (DB unused at runtime; compile-clean only)
+│   └── seed.ts                ← Seed script — upserts aids.json into AWS RDS. Run once after `pnpm db:push`.
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx         ← Root layout (PWA meta, fonts)
@@ -109,6 +109,7 @@ Area-67/
 
 ### 4. Aids browse (`/aids`)
 - All catalog aids in a 2-col `AidCard` grid with text search (matches localized name + provider) and a horizontal category chip filter ("Semua / Tunai / Baucar / Zakat / …"). Status pills inherit the matched/near-miss state from cached `aida.match`.
+- **Data source: AWS RDS PostgreSQL via Prisma**, queried by the Server Component at `src/app/(app)/aids/page.tsx` and passed as a prop into the client `AidsBrowse` component. This is the only screen in the runtime path that hits the DB; it's deliberately scoped to give the multi-cloud architecture a real cross-cloud query without putting the AI flow at risk. Falls back to `aids.json` if `DATABASE_URL` is unset or RDS is unreachable.
 
 ### 5. AIDa Chatbot
 - WhatsApp-style bubbles (green for AIDa, white for user), quick-reply chip suggestions, multilingual (uses `profile.language`).
@@ -157,9 +158,19 @@ The original target is a user group with LOW digital literacy. The UI/UX overhau
 # from a different project still works but reverts to the 20-RPD free tier.
 GEMINI_API_KEY=your_key_here
 
-# Database — optional. Schema + seed exist but the demo flow uses localStorage,
-# so the app runs end-to-end without this set.
-DATABASE_URL=postgresql://user:password@host:5432/aida
+# Database — points at AWS RDS PostgreSQL in production. The /aids browse
+# page (Server Component) queries this; the matcher, chat, dashboard, and
+# /aids/[id] detail still read from src/data/aids.json at module level.
+# When unset OR unreachable, the browse page falls back to aids.json so the
+# app still runs end-to-end without it (used for local dev + stage safety).
+# Multi-cloud demo posture: Next.js on Alicloud SWAS → cross-cloud read → AWS RDS.
+DATABASE_URL=postgresql://user:password@host:5432/aida?sslmode=require
+
+# Static assets — base URL for /logo/* image references. Empty/unset uses the
+# local /public folder (dev). In prod, point at Alicloud OSS+CDN domain so
+# logos and aida.png are served from the CDN edge.
+# e.g. https://cdn.aida.example.com  (no trailing slash)
+NEXT_PUBLIC_ASSETS_URL=
 
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -187,7 +198,7 @@ These are non-obvious things future-you (or another dev) will trip on. Read befo
 - **"fetch failed" from inside Next dev** = corporate MITM proxy intercepting HTTPS. The SDK wraps the underlying TLS error as a generic fetch failure with no `cause`. Fix by adding `NODE_TLS_REJECT_UNAUTHORIZED=0` to `.env.local` (dev only) or installing the corp CA via `NODE_EXTRA_CA_CERTS`.
 - **Both AI routes have offline fallbacks.** `/api/match` uses a deterministic rule-based matcher (parses `income_band` strings, gates on state/religion/age/gender/employment/education, treats missing registrations as `partial` with templated gap fixes from the BA's docx §B2). `/api/chat` returns a friendly multilingual "Maaf, saya tersengkang sekejap…" reply. The demo flow always renders something, never a blank screen.
 - **Gemini free tier = 20 requests/day per project.** Easy to burn during a testing session. Symptoms: `429 Too Many Requests` in the dev server console + `/api/match` returns in <1s (fallback). Resets at midnight Pacific. We've moved to paid tier — see Tech Stack — but if you swap keys to a non-billed project you'll hit the wall again.
-- **Prisma schema is intentionally schema-light.** `Aid` model is just `id + slug + data: Json` — the BA's rich aid catalog (multilingual names, tiered amounts, structured eligibility) lives inside the JSON column. Catalog updates don't require a migration. The DB is unused at runtime; this exists so `Application.aidId` has something to reference and so `pnpm build` typechecks `prisma/seed.ts`.
+- **Prisma schema is intentionally schema-light.** `Aid` model is just `id + slug + data: Json` — the BA's rich aid catalog (multilingual names, tiered amounts, structured eligibility) lives inside the JSON column. Catalog updates don't require a migration. The `/aids` browse page is the **only** runtime consumer (Server Component, `dynamic = 'force-dynamic'`); other screens still import `aids.json` directly so the AI hot path never round-trips to the DB. The browse page wraps the `findMany()` in try/catch and falls back to `aids.json` if RDS is unreachable — keeps the demo from going blank if the cross-cloud connection flakes on stage.
 - **localStorage caching matters for cost AND UX.** First dashboard visit hits Gemini (~5–15s); the result is cached as `aida.match` and any subsequent load is instant. For a clean live demo, clear `aida.profile` + `aida.match` before going on stage so onboarding fires fresh. For cost control, this means each unique demo persona costs ~$0.01–0.02 of Gemini spend, not $0.01 × every page view.
 - **Slim prompt to Gemini.** `matchAids` runs each aid through `slimAidForMatching` before sending to the LLM — drops UI-only fields (multilingual names, amounts, application steps, source URLs). Cuts the prompt from ~30KB to ~10KB. The dashboard re-hydrates the full Aid objects from `aids.json` by id when rendering; keep that in mind if you ever change the slim shape.
 - **Next.js was bumped to 14.2.35** for a security patch flagged by pnpm during install. App Router APIs unchanged from 14.2.
