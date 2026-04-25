@@ -5,6 +5,8 @@ frontend:
       commands:
         - npm install -g pnpm
         - pnpm install
+        - echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .env.production
+        - echo "NEXT_PUBLIC_ASSETS_URL=$NEXT_PUBLIC_ASSETS_URL" >> .env.production
     build:
       commands:
         - pnpm build
