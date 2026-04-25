@@ -15,21 +15,24 @@ function localizedName(aid: Aid, language: Language): string {
 
 const STATUS_META: Record<
   MatchStatus,
-  { label: string; className: string; icon: string }
+  { label: string; textClass: string; cardClass: string; icon: string }
 > = {
   eligible: {
     label: 'Layak',
-    className: 'bg-aida-greenLight text-aida-greenDark border-aida-green/30',
+    textClass: 'text-aida-greenDark',
+    cardClass: 'bg-aida-greenLight border-aida-green/20',
     icon: '✓',
   },
   partial: {
-    label: 'Hampir',
-    className: 'bg-yellow-50 text-yellow-900 border-yellow-300',
+    label: 'Hampir Layak',
+    textClass: 'text-orange-700',
+    cardClass: 'bg-orange-50 border-orange-200',
     icon: '⚠',
   },
   auto: {
     label: 'Auto',
-    className: 'bg-aida-greenLight text-aida-greenDark border-aida-green/30',
+    textClass: 'text-aida-greenDark',
+    cardClass: 'bg-aida-greenLight border-aida-green/20',
     icon: '⚡',
   },
 };
@@ -48,20 +51,19 @@ export default function AidCard({
     status ?? (aid.is_auto_credited ? 'auto' : undefined);
   const meta = effectiveStatus ? STATUS_META[effectiveStatus] : null;
   const logo = getAidLogo(aid.id);
-  const isPartial = effectiveStatus === 'partial';
 
   return (
     <Link
       href={`/aids/${aid.id}`}
-      className={`flex flex-col bg-white rounded-2xl border shadow-sm p-3 active:scale-[0.98] transition ${
-        isPartial ? 'border-yellow-200' : 'border-black/5'
+      className={`flex flex-col rounded-2xl border shadow-sm p-3 active:scale-[0.98] transition ${
+        meta?.cardClass ?? 'bg-white border-black/5'
       }`}
     >
       <div className="flex items-start justify-between gap-1.5">
         <ProviderLogo src={logo} fallback={aid.provider} />
         {meta && (
           <span
-            className={`shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full border text-[10px] font-semibold ${meta.className}`}
+            className={`shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold ${meta.textClass}`}
           >
             <span aria-hidden>{meta.icon}</span>
             {meta.label}
