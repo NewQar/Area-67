@@ -60,9 +60,25 @@ export default function DashboardPage() {
       .map((m) => {
         const aid = ALL_AIDS.find((a) => a.id === m.id);
         if (!aid) return null;
-        return { aid, reason: m.reason, confidence: m.confidence };
+        return {
+          aid,
+          reason: m.reason,
+          confidence: m.confidence,
+          status: m.status,
+          gap: m.gap,
+          fixUrl: m.fix_url,
+          estimatedDays: m.estimated_days,
+        };
       })
-      .filter(Boolean) as Array<{ aid: Aid; reason: string; confidence: number }>;
+      .filter(Boolean) as Array<{
+        aid: Aid;
+        reason: string;
+        confidence: number;
+        status?: MatchResult['matched'][number]['status'];
+        gap?: string;
+        fixUrl?: string;
+        estimatedDays?: number;
+      }>;
   }, [result]);
 
   const nearMissAids = useMemo(() => {
@@ -71,13 +87,22 @@ export default function DashboardPage() {
       .map((m) => {
         const aid = ALL_AIDS.find((a) => a.id === m.id);
         if (!aid) return null;
-        return { aid, gap: m.gap, suggestion: m.suggestion };
+        return { aid, gap: m.gap, suggestion: m.suggestion, fixUrl: m.fix_url };
       })
-      .filter(Boolean) as Array<{ aid: Aid; gap: string; suggestion: string }>;
+      .filter(Boolean) as Array<{
+        aid: Aid;
+        gap: string;
+        suggestion: string;
+        fixUrl?: string;
+      }>;
   }, [result]);
 
   const totalValue = useMemo(
-    () => matchedAids.reduce((sum, m) => sum + m.aid.amount, 0),
+    () =>
+      matchedAids.reduce((sum, m) => {
+        const headline = m.aid.amount.max_myr ?? m.aid.amount.min_myr;
+        return sum + headline;
+      }, 0),
     [matchedAids]
   );
 
@@ -125,6 +150,11 @@ export default function DashboardPage() {
                   aid={m.aid}
                   reason={m.reason}
                   confidence={m.confidence}
+                  language={profile?.language}
+                  status={m.status}
+                  gap={m.gap}
+                  fixUrl={m.fixUrl}
+                  estimatedDays={m.estimatedDays}
                 />
               ))}
             </section>
@@ -150,6 +180,8 @@ export default function DashboardPage() {
                   aid={n.aid}
                   gap={n.gap}
                   suggestion={n.suggestion}
+                  fixUrl={n.fixUrl}
+                  language={profile?.language}
                 />
               ))}
             </section>

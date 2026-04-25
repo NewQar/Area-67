@@ -40,6 +40,9 @@ const INCOME_BUCKETS = [
 
 const TOTAL_STEPS = 3;
 
+type Gender = 'male' | 'female';
+type ReligionChoice = 'islam' | 'non-islam';
+
 export default function OnboardingForm() {
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -47,16 +50,19 @@ export default function OnboardingForm() {
   const [name, setName] = useState('');
   const [language, setLanguage] = useState<Language>('ms');
   const [age, setAge] = useState(35);
-  const [state, setState] = useState('Kelantan');
+  const [gender, setGender] = useState<Gender | null>(null);
+  const [state, setState] = useState('Selangor');
   const [householdSize, setHouseholdSize] = useState(4);
+  const [numChildren, setNumChildren] = useState(0);
+  const [religion, setReligion] = useState<ReligionChoice | null>(null);
   const [monthlyIncome, setMonthlyIncome] = useState<number | null>(null);
 
   const canContinue = useMemo(() => {
     if (step === 1) return name.trim().length > 0;
-    if (step === 2) return age > 0 && state.length > 0 && householdSize > 0;
-    if (step === 3) return monthlyIncome !== null;
+    if (step === 2) return age > 0 && gender !== null && state.length > 0 && householdSize > 0;
+    if (step === 3) return religion !== null && monthlyIncome !== null;
     return false;
-  }, [step, name, age, state, householdSize, monthlyIncome]);
+  }, [step, name, age, gender, state, householdSize, religion, monthlyIncome]);
 
   function next() {
     if (step < TOTAL_STEPS) {
@@ -71,7 +77,7 @@ export default function OnboardingForm() {
   }
 
   async function submit() {
-    if (monthlyIncome === null) return;
+    if (monthlyIncome === null || gender === null || religion === null) return;
     setSubmitting(true);
     const profile: UserProfile = {
       name: name.trim(),
@@ -81,6 +87,9 @@ export default function OnboardingForm() {
       householdSize,
       monthlyIncome,
       citizenship: 'malaysian',
+      gender,
+      numChildren,
+      religion: religion === 'islam' ? 'islam' : 'non-islam',
     };
     try {
       localStorage.setItem('aida.profile', JSON.stringify(profile));
@@ -167,15 +176,29 @@ export default function OnboardingForm() {
               onChange={setAge}
             />
 
-            <NumberStepper
-              label="Bilangan ahli isi rumah"
-              value={householdSize}
-              min={1}
-              max={15}
-              step={1}
-              onChange={setHouseholdSize}
-              hint="Termasuk anak, ibu bapa atau yang anda tanggung"
-            />
+            <div>
+              <p className="label">Jantina</p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { value: 'male' as Gender, label: 'Lelaki' },
+                  { value: 'female' as Gender, label: 'Perempuan' },
+                ].map((g) => (
+                  <button
+                    key={g.value}
+                    type="button"
+                    onClick={() => setGender(g.value)}
+                    aria-pressed={gender === g.value}
+                    className={`min-h-tap rounded-xl border-2 px-4 py-3 text-body font-semibold transition ${
+                      gender === g.value
+                        ? 'border-aida-green bg-aida-greenLight text-aida-greenDark'
+                        : 'border-black/10 text-aida-ink'
+                    }`}
+                  >
+                    {g.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <div>
               <label htmlFor="state" className="label">
@@ -194,29 +217,81 @@ export default function OnboardingForm() {
                 ))}
               </select>
             </div>
+
+            <NumberStepper
+              label="Bilangan ahli isi rumah"
+              value={householdSize}
+              min={1}
+              max={15}
+              step={1}
+              onChange={setHouseholdSize}
+              hint="Termasuk anak, ibu bapa atau yang anda tanggung"
+            />
+
+            <NumberStepper
+              label="Bilangan anak di bawah 18 tahun"
+              value={numChildren}
+              min={0}
+              max={10}
+              step={1}
+              onChange={setNumChildren}
+            />
           </div>
         )}
 
         {step === 3 && (
           <div className="space-y-6">
-            <h1>Pendapatan bulanan isi rumah</h1>
-            <p className="text-aida-muted">Anggaran sahaja. Tiada bukti diperlukan sekarang.</p>
-            <div className="space-y-3">
-              {INCOME_BUCKETS.map((b) => (
-                <button
-                  key={b.value}
-                  type="button"
-                  onClick={() => setMonthlyIncome(b.value)}
-                  aria-pressed={monthlyIncome === b.value}
-                  className={`w-full min-h-tap rounded-2xl border-2 px-5 py-4 text-left text-lead font-semibold transition ${
-                    monthlyIncome === b.value
-                      ? 'border-aida-green bg-aida-greenLight text-aida-greenDark'
-                      : 'border-black/10 text-aida-ink'
-                  }`}
-                >
-                  {b.label}
-                </button>
-              ))}
+            <h1>Pendapatan & agama</h1>
+
+            <div>
+              <p className="label">Agama</p>
+              <p className="text-sm text-aida-muted mb-2">
+                Untuk semak kelayakan bantuan zakat
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { value: 'islam' as ReligionChoice, label: 'Islam' },
+                  { value: 'non-islam' as ReligionChoice, label: 'Bukan Islam' },
+                ].map((r) => (
+                  <button
+                    key={r.value}
+                    type="button"
+                    onClick={() => setReligion(r.value)}
+                    aria-pressed={religion === r.value}
+                    className={`min-h-tap rounded-xl border-2 px-4 py-3 text-body font-semibold transition ${
+                      religion === r.value
+                        ? 'border-aida-green bg-aida-greenLight text-aida-greenDark'
+                        : 'border-black/10 text-aida-ink'
+                    }`}
+                  >
+                    {r.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="label">Pendapatan bulanan isi rumah</p>
+              <p className="text-sm text-aida-muted mb-2">
+                Anggaran sahaja. Tiada bukti diperlukan sekarang.
+              </p>
+              <div className="space-y-3">
+                {INCOME_BUCKETS.map((b) => (
+                  <button
+                    key={b.value}
+                    type="button"
+                    onClick={() => setMonthlyIncome(b.value)}
+                    aria-pressed={monthlyIncome === b.value}
+                    className={`w-full min-h-tap rounded-2xl border-2 px-5 py-4 text-left text-lead font-semibold transition ${
+                      monthlyIncome === b.value
+                        ? 'border-aida-green bg-aida-greenLight text-aida-greenDark'
+                        : 'border-black/10 text-aida-ink'
+                    }`}
+                  >
+                    {b.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}

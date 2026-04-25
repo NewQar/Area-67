@@ -16,6 +16,8 @@ const ProfileSchema = z.object({
   citizenship: z.string().optional(),
   hasOKUCard: z.boolean().optional(),
   religion: z.string().optional(),
+  gender: z.enum(['male', 'female']).optional(),
+  numChildren: z.number().int().min(0).max(15).optional(),
 });
 
 const Body = z.object({ profile: ProfileSchema });

@@ -47,12 +47,11 @@ export async function POST(req: Request) {
   }
 
   const { profile, matchedAids, messages } = parsed.data;
-  const lastUser = messages[messages.length - 1].content;
 
   if (!hasGeminiKey) {
     console.warn('[chat] GEMINI_API_KEY not set — returning offline reply');
     return NextResponse.json({
-      reply: offlineReply(profile, lastUser, 'no-key'),
+      reply: offlineReply(profile),
     });
   }
 
@@ -75,21 +74,20 @@ export async function POST(req: Request) {
     const detail = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
     console.error('[chat] gemini call failed —', detail);
     return NextResponse.json({
-      reply: offlineReply(profile, lastUser, 'api-error'),
+      reply: offlineReply(profile),
       _debug: process.env.NODE_ENV === 'development' ? detail : undefined,
     });
   }
 }
 
-function offlineReply(
-  profile: UserProfile | null,
-  lastUser: string,
-  cause: 'no-key' | 'api-error'
-): string {
+const FALLBACK_REPLY: Record<UserProfile['language'], string> = {
+  ms: 'Maaf, saya tersengkang sekejap. Sila cuba lagi dalam beberapa saat.',
+  en: "Sorry, I'm a little slow right now. Please try again in a few seconds.",
+  zh: '抱歉，我现在有点慢。请稍等几秒后再试。',
+  ta: 'மன்னிக்கவும், சில விநாடிகளில் மீண்டும் முயற்சிக்கவும்.',
+};
+
+function offlineReply(profile: UserProfile | null): string {
   const lang = profile?.language ?? 'ms';
-  const tag = cause === 'no-key' ? '[no API key]' : '[API error]';
-  if (lang === 'en') {
-    return `${tag} I'm AIDa. I heard you ask: "${lastUser}". I can't reach my AI brain right now — check the dev server console.`;
-  }
-  return `${tag} Saya AIDa. Soalan anda: "${lastUser}". Otak AI saya sedang tiada talian — semak konsol pelayan dev.`;
+  return FALLBACK_REPLY[lang] ?? FALLBACK_REPLY.ms;
 }

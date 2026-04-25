@@ -27,16 +27,15 @@ model User {
   applications Application[]
 }
 
+// The aid catalog is canonical in src/data/aids.json (BA1 schema, multilingual
+// names, tiered amounts, structured eligibility). The DB mirror is intentionally
+// schema-light — store the full aid object as Json — so catalog updates don't
+// require a migration. Demo flow never reads from the DB; this model exists so
+// Application.aidId has something to reference.
 model Aid {
-  id          String  @id
-  name        String
-  nameEn      String
-  amount      Int
-  frequency   String // yearly | monthly | quarterly | one-off
-  description String
-  applyUrl    String
-  provider    String
-  criteria    Json
+  id   String @id
+  slug String @unique
+  data Json
 
   applications Application[]
 }
