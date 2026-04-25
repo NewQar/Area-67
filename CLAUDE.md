@@ -19,8 +19,8 @@ AIDa (Aid Intelligence & Discovery Assistant) is a PWA (Progressive Web App) tha
 | Styling | Tailwind CSS | Mobile-first, standard text sizing (see Design Principles), high contrast |
 | Backend | Next.js API Routes | Keep it simple, no separate BE needed |
 | Database | PostgreSQL via Prisma ORM | Hosted on AWS RDS. Schema + seed exist; demo flow does not actually hit the DB at runtime (localStorage-only). |
-| AI Matching | Google Gemini API (`gemini-flash-latest`, paid tier) | For aid matching and gap analysis. Free tier capped us at 20 RPD which we burned through in testing — switched to paid (MYR 40 prepaid credit on the Default Gemini Project as of 2026-04-25). Realistic demo cost is ~$0.01 per full session. |
-| AI Chatbot | Google Gemini API (`gemini-flash-latest`, paid tier) | Originally Claude in the spec; swapped to Gemini after Anthropic credits ran out. Same model + key as matching — shares the project quota. |
+| AI Matching | Google Gemini API (`gemini-flash-lite-latest`, paid tier) | For aid matching and gap analysis. Free tier capped us at 20 RPD which we burned through in testing — switched to paid (MYR 40 prepaid credit on the Default Gemini Project as of 2026-04-25). Realistic demo cost is ~$0.01 per full session. Both routes moved off `gemini-flash-latest` to **lite** because lite skips the hidden reasoning step that 2.5 Flash spends on every turn, ~halving latency on our lookup-and-rephrase workload. |
+| AI Chatbot | Google Gemini API (`gemini-flash-lite-latest`, paid tier) | Originally Claude in the spec; swapped to Gemini after Anthropic credits ran out. Same model + key as matching — shares the project quota. |
 | Deployment | AWS Amplify (primary) | Auto-deploy from GitHub |
 | AI Inference | Alibaba Cloud PAI/Model Studio | Secondary AI, Malay NLP justification |
 | CDN | Alibaba Cloud CDN | Asset delivery for Malaysia region |
@@ -74,8 +74,8 @@ Area-67/
 │       └── aids.json          ← 15 aids in BA1 schema — display fields translated to BM (see Seed Data)
 └── public/
     ├── manifest.json          ← PWA manifest
-    ├── icons/                 ← App icons (192/512 PNGs to be added)
-    └── logo/                  ← Provider logos referenced by src/lib/logo.ts
+    ├── icons/                 ← App icons (icon-192.png + icon-512.png, blue background)
+    └── logo/                  ← aida.png (splash logo) + provider logos referenced by src/lib/logo.ts
 ```
 
 **Route map at a glance:**
@@ -125,7 +125,7 @@ Area-67/
 - Reads `aida.profile` from localStorage. Shows demographic summary, language switcher (writes back to `aida.profile`), settings list (Notifikasi / Privasi / Tentang AIDa — display only), and a destructive "Padam profil & mula semula" that clears `aida.profile` + `aida.match` and routes to `/welcome`.
 
 ### 8. Splash (`/`)
-- Static logo + tagline + spinner on a green background, auto-advances after 1500ms. Routes to `/dashboard` if a profile exists, else `/welcome`. Shown every launch (no first-launch flag).
+- White background with the `public/logo/aida.png` mark fading-in + scaling on mount, tagline ("Aid Intelligent & Discovery Assistant") sliding up after a 200ms delay, and a small blue spinner below. Auto-advances after 1500ms. Routes to `/dashboard` if a profile exists, else `/welcome`. Shown every launch (no first-launch flag).
 
 ---
 
@@ -143,6 +143,8 @@ The original target is a user group with LOW digital literacy. The UI/UX overhau
 8. **Progress is always visible** — show where they are in any multi-step flow (onboarding wizard has a percentage-based bar driven by phase → progress map)
 9. **Error messages in plain language** — "Cuba lagi" not "Error 422"
 10. **Confirmation before any action** — never silent submissions (see profile reset which uses `confirm()`)
+
+**Brand palette (post 2026-04-25 refresh):** primary brand shifted from green to blue. Tailwind tokens are `aida.blue` `#2563eb` / `aida.blueDark` `#1e40af` / `aida.blueLight` `#dbeafe` (defined in `tailwind.config.ts`); the PWA `theme_color` and viewport `themeColor` are both `#2563eb`. The old `aida.green*` tokens have been removed — anything referencing them won't compile. Two non-brand accents intentionally kept: `/insights` "win"-tone advice card uses `emerald-50/100/900` and the "Barangan dapur" spending bar uses `bg-emerald-500`, so the green isn't load-bearing on brand.
 
 ---
 
@@ -180,8 +182,8 @@ These are non-obvious things future-you (or another dev) will trip on. Read befo
 - **Use pnpm, not npm.** This repo was scaffolded on Node 25 + npm 11, where npm's Arborist crashes on this dep tree (`Cannot read properties of null (reading 'matches')`). pnpm installs cleanly. Use `pnpm install` / `pnpm dev` / `pnpm build`.
 - **`next-pwa` was removed from the spec.** Same npm bug above was triggered by next-pwa's old transitive tree. The manifest + theme color tags still give installable-PWA behavior; the offline service worker is the only thing missing. Re-add later if needed.
 - **Restart `pnpm dev` after editing `.env.local`.** Next reads env vars once at server start. Symptoms of forgetting: chat returns the offline fallback even though your key is set.
-- **Gemini model name: `gemini-flash-latest`.** `gemini-1.5-flash` was retired from the v1beta endpoint in April 2026. Both `/api/match` and `/api/chat` use `gemini-flash-latest`, which auto-tracks the current free-tier Flash.
-- **`maxOutputTokens` must be ≥ 2048** for chat. Gemini 2.5+ Flash counts hidden reasoning tokens against the budget; with 400 you get truncated mid-sentence replies. Set in `src/lib/gemini.ts`.
+- **Gemini model name: `gemini-flash-lite-latest`.** Both `/api/match` and `/api/chat` use the **lite** variant (swapped 2026-04-25). `gemini-1.5-flash` was retired from the v1beta endpoint in April 2026, and we moved off `gemini-flash-latest` because Flash 2.5 spends hidden reasoning tokens on every turn — lite skips that and is roughly 2× faster on our lookup-and-rephrase workload. If you ever want to A/B against full Flash, change the literal in `src/lib/gemini.ts` (it appears once in `matchAids` and once in `chatWithAida`). Match runs at `temperature: 0.1`, chat at `0.6`.
+- **`maxOutputTokens` for chat is back to 512.** With Flash 2.5 we had to inflate to 2048 because hidden reasoning ate the budget and replies truncated mid-sentence. Lite has no thinking step so 512 is plenty. If you ever swap chat back to full Flash, bump this back up. Set in `src/lib/gemini.ts`.
 - **"fetch failed" from inside Next dev** = corporate MITM proxy intercepting HTTPS. The SDK wraps the underlying TLS error as a generic fetch failure with no `cause`. Fix by adding `NODE_TLS_REJECT_UNAUTHORIZED=0` to `.env.local` (dev only) or installing the corp CA via `NODE_EXTRA_CA_CERTS`.
 - **Both AI routes have offline fallbacks.** `/api/match` uses a deterministic rule-based matcher (parses `income_band` strings, gates on state/religion/age/gender/employment/education, treats missing registrations as `partial` with templated gap fixes from the BA's docx §B2). `/api/chat` returns a friendly multilingual "Maaf, saya tersengkang sekejap…" reply. The demo flow always renders something, never a blank screen.
 - **Gemini free tier = 20 requests/day per project.** Easy to burn during a testing session. Symptoms: `429 Too Many Requests` in the dev server console + `/api/match` returns in <1s (fallback). Resets at midnight Pacific. We've moved to paid tier — see Tech Stack — but if you swap keys to a non-billed project you'll hit the wall again.
