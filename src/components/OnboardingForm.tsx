@@ -193,6 +193,7 @@ export default function OnboardingForm() {
     };
     try {
       localStorage.setItem('aida.profile', JSON.stringify(profile));
+      localStorage.removeItem('aida.match');
     } catch {
       // ignore
     }

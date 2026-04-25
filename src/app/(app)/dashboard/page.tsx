@@ -29,6 +29,19 @@ export default function DashboardPage() {
     const parsed = JSON.parse(stored) as UserProfile;
     setProfile(parsed);
 
+    let cached: MatchResult | null = null;
+    try {
+      const raw = localStorage.getItem('aida.match');
+      if (raw) cached = JSON.parse(raw) as MatchResult;
+    } catch {
+      cached = null;
+    }
+    if (cached) {
+      setResult(cached);
+      setLoading(false);
+      return;
+    }
+
     fetch('/api/match', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
