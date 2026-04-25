@@ -21,9 +21,9 @@ AIDa (Aid Intelligence & Discovery Assistant) is a PWA (Progressive Web App) tha
 | Database | PostgreSQL via Prisma ORM | Hosted on AWS RDS (multi-cloud story — Alicloud-hosted Next.js reads cross-cloud). Only `/aids` browse page queries the DB; matcher / chat / dashboard / `/aids/[id]` still read `aids.json` directly. Falls back to `aids.json` when DB is unset or unreachable. |
 | AI Matching | Google Gemini API (`gemini-flash-lite-latest`, paid tier) | For aid matching and gap analysis. Free tier capped us at 20 RPD which we burned through in testing — switched to paid (MYR 40 prepaid credit on the Default Gemini Project as of 2026-04-25). Realistic demo cost is ~$0.01 per full session. Both routes moved off `gemini-flash-latest` to **lite** because lite skips the hidden reasoning step that 2.5 Flash spends on every turn, ~halving latency on our lookup-and-rephrase workload. |
 | AI Chatbot | Google Gemini API (`gemini-flash-lite-latest`, paid tier) | Originally Claude in the spec; swapped to Gemini after Anthropic credits ran out. Same model + key as matching — shares the project quota. |
-| Deployment | AWS Amplify (primary) | Auto-deploy from GitHub |
-| AI Inference | Alibaba Cloud PAI/Model Studio | Secondary AI, Malay NLP justification |
-| CDN | Alibaba Cloud CDN | Asset delivery for Malaysia region |
+| App hosting (primary) | Alibaba Cloud SWAS (Malaysia/KL) | Ubuntu 22 + Nginx → 127.0.0.1:3000 + PM2; live demo URL terminates here. See Deployment section. |
+| App hosting (backup) | AWS Amplify (Singapore) | Auto-build from `main` via [amplify.yml](amplify.yml). Stage-safety fallback — same code, no DATABASE_URL set so `/aids` falls back to `aids.json`. |
+| Static assets | Alibaba Cloud OSS (Malaysia/KL) | Bucket `aida-assets-67`, public-read. Logos served from `/logo/*`. CDN was dropped (requires custom domain we don't own). |
 
 ---
 
@@ -33,6 +33,7 @@ AIDa (Aid Intelligence & Discovery Assistant) is a PWA (Progressive Web App) tha
 Area-67/
 ├── CLAUDE.md                  ← You are here (source of truth)
 ├── .env.local                 ← API keys (never commit this)
+├── amplify.yml                ← AWS Amplify build config — installs pnpm globally, then `pnpm install && pnpm build`
 ├── research/                  ← BA1 source material (aids.json + .docx integration ref)
 ├── prisma/
 │   ├── schema.prisma          ← DB schema (Aid is id+slug+data:Json — see Setup Notes)
@@ -186,6 +187,38 @@ Billing console: https://aistudio.google.com/usage (or Cloud Console → Billing
 
 ---
 
+## Deployment
+
+AIDa runs across two clouds for the multi-cloud demo posture. SWAS is the live demo URL; everything else supports it.
+
+| Layer | Cloud | Service / instance | Live target |
+|-------|-------|--------------------|-------------|
+| Compute (primary) | Alibaba Cloud | SWAS `Ubuntu-kjyq` (Malaysia/KL) — Nginx → PM2 → `pnpm start` | http://47.250.136.5 |
+| Compute (backup) | AWS | Amplify app `aida-backup` (Singapore, ap-southeast-1) | https://main.\<id>.amplifyapp.com |
+| Static assets | Alibaba Cloud | OSS bucket `aida-assets-67` (Malaysia, ap-southeast-3, public-read) | https://aida-assets-67.oss-ap-southeast-3.aliyuncs.com/logo/* |
+| Database | AWS | RDS PostgreSQL `aida-db` (Malaysia, ap-southeast-5, db.t3.micro) | aida-db.czgkk84ugb79.ap-southeast-5.rds.amazonaws.com:5432 |
+
+**Cross-cloud query path:** SWAS-hosted Next.js → AWS RDS over public internet (`sslmode=require`). RDS security group whitelists only the SWAS public IP (`47.250.136.5/32`). Only `/aids` browse uses it; matcher / chat / dashboard / `/aids/[id]` still import `aids.json` directly so the AI hot path never round-trips to the DB.
+
+**Env vars per instance:**
+- **SWAS** (`/opt/aida/.env.local`): full set — `GEMINI_API_KEY`, `DATABASE_URL` (with `?sslmode=require`), `NEXT_PUBLIC_ASSETS_URL` pointing at the OSS bucket.
+- **Amplify** (Amplify console → Environment variables): only `GEMINI_API_KEY` and `NEXT_PUBLIC_ASSETS_URL`. `DATABASE_URL` is **deliberately omitted** — Amplify build hosts have no stable IPs to whitelist in the RDS SG, and opening RDS to `0.0.0.0/0` is a security trade we declined to make. The Server Component at `/aids` short-circuits to `aids.json` when `DATABASE_URL` is unset, so the Amplify deploy renders the same catalog without the cross-cloud hop.
+
+**SWAS redeploy procedure** (after a `git push origin main`):
+```bash
+ssh root@47.250.136.5
+cd /opt/aida && git pull && pnpm install && pnpm build && pm2 restart aida
+```
+Note: any change to `NEXT_PUBLIC_*` env vars requires a rebuild (Next.js inlines them at build time). Server-only env vars like `DATABASE_URL` and `GEMINI_API_KEY` only need `pm2 restart aida`.
+
+**Amplify redeploy:** push to `main` — GitHub webhook fires → Amplify auto-builds via `amplify.yml`. ~5–8 min per build.
+
+**Nginx config** lives at `/etc/nginx/sites-available/aida` on the SWAS box — single `server` block on port 80, reverse-proxies everything to `127.0.0.1:3000`, 120s timeouts (matcher takes 5–15s on Gemini).
+
+**No HTTPS yet.** SSL would require a domain (Let's Encrypt won't issue for bare IPs). DuckDNS or a $1 .xyz are the cheap paths if needed; we declined for hackathon expediency.
+
+---
+
 ## Setup Notes (gotchas we hit during build)
 
 These are non-obvious things future-you (or another dev) will trip on. Read before starting fresh.
@@ -202,6 +235,9 @@ These are non-obvious things future-you (or another dev) will trip on. Read befo
 - **localStorage caching matters for cost AND UX.** First dashboard visit hits Gemini (~5–15s); the result is cached as `aida.match` and any subsequent load is instant. For a clean live demo, clear `aida.profile` + `aida.match` before going on stage so onboarding fires fresh. For cost control, this means each unique demo persona costs ~$0.01–0.02 of Gemini spend, not $0.01 × every page view.
 - **Slim prompt to Gemini.** `matchAids` runs each aid through `slimAidForMatching` before sending to the LLM — drops UI-only fields (multilingual names, amounts, application steps, source URLs). Cuts the prompt from ~30KB to ~10KB. The dashboard re-hydrates the full Aid objects from `aids.json` by id when rendering; keep that in mind if you ever change the slim shape.
 - **Next.js was bumped to 14.2.35** for a security patch flagged by pnpm during install. App Router APIs unchanged from 14.2.
+- **Amplify's default build container has no `pnpm`.** First Amplify build failed with `pnpm: command not found` at the preBuild phase. Fix: [amplify.yml](amplify.yml) at the repo root installs pnpm globally (`npm install -g pnpm`) before running `pnpm install` + `pnpm build`. If you ever rebuild this on a different CI provider, replicate that step.
+- **Amplify deliberately runs without `DATABASE_URL`.** Amplify build/run hosts don't have stable IPs we can whitelist in the RDS security group, and opening RDS to `0.0.0.0/0` was a security trade we chose not to make. The `/aids` Server Component short-circuits to `aids.json` when `DATABASE_URL` is unset — same data, no cross-cloud hop. Demo framing: "primary deploy on SWAS hits RDS cross-cloud; backup deploy on Amplify uses local catalog as stage-safety fallback."
+- **OSS bucket is public-read with files at `/logo/<file>.png`.** Watch for the double-`logo/` trap on first upload: dragging the local `public/logo/` folder into a freshly-created `logo/` folder in the OSS console nests it as `logo/logo/aida.png`. Files must live one level deep (`logo/aida.png`) for the `NEXT_PUBLIC_ASSETS_URL` + `${ASSET_BASE}/logo/${file}` pattern in [src/lib/logo.ts](src/lib/logo.ts) to resolve.
 
 ---
 
