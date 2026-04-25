@@ -42,11 +42,11 @@ const ADVICE: Array<{
 
 const TONE_META: Record<
   AdviceTone,
-  { icon: string; bg: string; ring: string; text: string }
+  { bg: string; ring: string; text: string; accent: string }
 > = {
-  tip: { icon: '💡', bg: 'bg-blue-50', ring: 'ring-blue-100', text: 'text-blue-900' },
-  warn: { icon: '⏰', bg: 'bg-amber-50', ring: 'ring-amber-100', text: 'text-amber-900' },
-  win: { icon: '🎉', bg: 'bg-emerald-50', ring: 'ring-emerald-100', text: 'text-emerald-900' },
+  tip: { bg: 'bg-blue-50', ring: 'ring-blue-100', text: 'text-blue-900', accent: 'bg-blue-500' },
+  warn: { bg: 'bg-amber-50', ring: 'ring-amber-100', text: 'text-amber-900', accent: 'bg-amber-500' },
+  win: { bg: 'bg-emerald-50', ring: 'ring-emerald-100', text: 'text-emerald-900', accent: 'bg-emerald-500' },
 };
 
 export default function InsightsPage() {
@@ -135,7 +135,7 @@ export default function InsightsPage() {
                 className={`rounded-2xl p-3.5 ring-1 ${meta.bg} ${meta.ring}`}
               >
                 <div className="flex gap-2.5">
-                  <span aria-hidden className="text-xl leading-none">{meta.icon}</span>
+                  <span aria-hidden className={`mt-1 w-1 self-stretch rounded-full ${meta.accent}`} />
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm font-bold ${meta.text}`}>{a.title}</p>
                     <p className="mt-0.5 text-xs text-aida-ink/80">{a.body}</p>
