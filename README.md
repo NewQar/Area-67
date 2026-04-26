@@ -47,18 +47,14 @@ That's the entire pitch. Everything below explains how it works.
 
 ## Screenshots
 
-> Drop captured screenshots into `docs/screenshots/` using the filenames below. The README will pick them up automatically.
-
-| | | |
-|---|---|---|
-| **Splash** | **Welcome** | **MyKad eKYC mock** |
-| ![Splash](docs/screenshots/01-splash.png) | ![Welcome](docs/screenshots/02-welcome.png) | ![MyKad scan](docs/screenshots/03-mykad-scan.png) |
-| **MyKad confirm (auto-filled)** | **Onboarding wizard** | **Dashboard / matched aids** |
-| ![MyKad confirm](docs/screenshots/04-mykad-confirm.png) | ![Onboarding](docs/screenshots/05-onboarding.png) | ![Dashboard](docs/screenshots/06-dashboard.png) |
-| **Aid detail** | **Catalog browse** | **Insights (TnG wallet)** |
-| ![Aid detail](docs/screenshots/07-aid-detail.png) | ![Catalog](docs/screenshots/08-catalog.png) | ![Insights](docs/screenshots/09-insights.png) |
-| **AIDa chatbot (BM)** | **Profile** | **Near-miss / 1-step-away** |
-| ![Chat](docs/screenshots/10-chat.png) | ![Profile](docs/screenshots/11-profile.png) | ![Near-miss](docs/screenshots/12-near-miss.png) |
+<img width="360" height="800" alt="Media" src="https://github.com/user-attachments/assets/40e877fd-7701-4cf1-85c1-97bd7f99fcb4" />
+<img width="1220" height="2712" alt="Media2" src="https://github.com/user-attachments/assets/87792479-151d-45be-901d-cfde25e8fba4" />
+<img width="1220" height="2712" alt="Media3" src="https://github.com/user-attachments/assets/dfe62a9d-47e1-40e8-9bcf-15673ae1140d" />
+<img width="1220" height="2712" alt="Media4" src="https://github.com/user-attachments/assets/408ff7a8-6131-4977-bb54-84886b4a3331" />
+<img width="1220" height="2712" alt="Media5" src="https://github.com/user-attachments/assets/c5bc9586-3c60-482a-9e02-8c4db97292ad" />
+<img width="1220" height="2712" alt="Media6" src="https://github.com/user-attachments/assets/aad679a5-c1a3-4153-84d8-87d7a873a0a3" />
+<img width="1220" height="2712" alt="Media7" src="https://github.com/user-attachments/assets/37c9164f-716b-4a0e-bc51-11fd55d58d5c" />
+<img width="1220" height="2712" alt="Media8" src="https://github.com/user-attachments/assets/e14ec2f7-6ed5-4837-9e3a-f8751f54979a" />
 
 ---
 
