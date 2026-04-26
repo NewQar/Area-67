@@ -81,7 +81,7 @@ export async function POST(req: Request) {
 }
 
 const FALLBACK_REPLY: Record<UserProfile['language'], string> = {
-  ms: 'Maaf, saya tersengkang sekejap. Sila cuba lagi dalam beberapa saat.',
+  ms: 'Maaf, saya sedang menghadapi permintaan yang tinggi. Sila cuba lagi dalam beberapa saat.',
   en: "Sorry, I'm a little slow right now. Please try again in a few seconds.",
   zh: '抱歉，我现在有点慢。请稍等几秒后再试。',
   ta: 'மன்னிக்கவும், சில விநாடிகளில் மீண்டும் முயற்சிக்கவும்.',
