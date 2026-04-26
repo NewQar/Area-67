@@ -105,18 +105,37 @@ ${JSON.stringify(GAP_TEMPLATES)}
 
 Respond ONLY with valid JSON. No markdown, no commentary.`;
 
+const PRIMARY_MODEL = 'gemini-flash-lite-latest';
+const FALLBACK_MODEL = 'gemini-flash-latest';
+
+function isTransient(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /\b503\b|Service Unavailable|overloaded|high demand/i.test(msg);
+}
+
 // Gemini Lite occasionally returns 503 ("high demand") during peak hours.
-// Retry up to twice with short backoff before bubbling up to the caller's
-// fallback path. Only retries on transient upstream signals.
-async function withGeminiRetry<T>(fn: () => Promise<T>, label: string): Promise<T> {
+// Retry up to twice on the primary (lite) model, then fall back once to
+// flash-latest if lite is still overloaded. Non-transient errors throw
+// immediately into the caller's offline fallback.
+async function withGeminiRetry<T>(
+  primary: () => Promise<T>,
+  fallback: () => Promise<T>,
+  label: string
+): Promise<T> {
   const delays = [500, 1500];
   for (let attempt = 0; attempt <= delays.length; attempt++) {
     try {
-      return await fn();
+      return await primary();
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      const transient = /\b503\b|Service Unavailable|overloaded|high demand/i.test(msg);
-      if (!transient || attempt === delays.length) throw err;
+      if (!isTransient(err)) throw err;
+      if (attempt === delays.length) {
+        console.warn(`[gemini] ${label} primary still 503 after retries, switching to ${FALLBACK_MODEL}`);
+        try {
+          return await fallback();
+        } catch (fallbackErr) {
+          throw fallbackErr;
+        }
+      }
       console.warn(`[gemini] ${label} 503, retrying in ${delays[attempt]}ms (attempt ${attempt + 1})`);
       await new Promise((r) => setTimeout(r, delays[attempt]));
     }
@@ -150,10 +169,11 @@ export async function matchAids(profile: UserProfile, aids: Aid[]): Promise<Matc
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-flash-lite-latest',
+  const matchConfig = {
     generationConfig: { responseMimeType: 'application/json', temperature: 0.1 },
-  });
+  } as const;
+  const primaryModel = genAI.getGenerativeModel({ model: PRIMARY_MODEL, ...matchConfig });
+  const fallbackModel = genAI.getGenerativeModel({ model: FALLBACK_MODEL, ...matchConfig });
 
   const slim = aids.map(slimAidForMatching);
   const prompt = `${SYSTEM_PROMPT}
@@ -162,7 +182,11 @@ User profile: ${JSON.stringify(profile)}
 Available aids: ${JSON.stringify(slim)}`;
 
   try {
-    const result = await withGeminiRetry(() => model.generateContent(prompt), 'match');
+    const result = await withGeminiRetry(
+      () => primaryModel.generateContent(prompt),
+      () => fallbackModel.generateContent(prompt),
+      'match'
+    );
     const text = result.response.text();
     const parsed = JSON.parse(text) as MatchResult;
     return normalizeResult(parsed);
@@ -201,18 +225,23 @@ export async function chatWithAida(
     throw new Error('GEMINI_API_KEY not set');
   }
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-flash-lite-latest',
+  const chatConfig = {
     systemInstruction: systemPrompt,
     generationConfig: { temperature: 0.6, maxOutputTokens: 512 },
-  });
+  } as const;
+  const primaryModel = genAI.getGenerativeModel({ model: PRIMARY_MODEL, ...chatConfig });
+  const fallbackModel = genAI.getGenerativeModel({ model: FALLBACK_MODEL, ...chatConfig });
 
   const contents = messages.map((m) => ({
     role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: m.content }],
   }));
 
-  const result = await withGeminiRetry(() => model.generateContent({ contents }), 'chat');
+  const result = await withGeminiRetry(
+    () => primaryModel.generateContent({ contents }),
+    () => fallbackModel.generateContent({ contents }),
+    'chat'
+  );
   const candidate = result.response.candidates?.[0];
   const finish = candidate?.finishReason;
   const text = result.response.text().trim();
