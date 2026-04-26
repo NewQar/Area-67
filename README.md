@@ -48,25 +48,19 @@ That's the entire pitch. Everything below explains how it works.
 ## Screenshots
 
 <img width="360" height="800" alt="Media" src="https://github.com/user-attachments/assets/40e877fd-7701-4cf1-85c1-97bd7f99fcb4" />
-<img width="1220" height="2712" alt="Media2" src="https://github.com/user-attachments/assets/87792479-151d-45be-901d-cfde25e8fba4" />
-<img width="1220" height="2712" alt="Media3" src="https://github.com/user-attachments/assets/dfe62a9d-47e1-40e8-9bcf-15673ae1140d" />
-<img width="1220" height="2712" alt="Media4" src="https://github.com/user-attachments/assets/408ff7a8-6131-4977-bb54-84886b4a3331" />
-<img width="1220" height="2712" alt="Media5" src="https://github.com/user-attachments/assets/c5bc9586-3c60-482a-9e02-8c4db97292ad" />
-<img width="1220" height="2712" alt="Media6" src="https://github.com/user-attachments/assets/aad679a5-c1a3-4153-84d8-87d7a873a0a3" />
-<img width="1220" height="2712" alt="Media7" src="https://github.com/user-attachments/assets/37c9164f-716b-4a0e-bc51-11fd55d58d5c" />
-<img width="1220" height="2712" alt="Media8" src="https://github.com/user-attachments/assets/e14ec2f7-6ed5-4837-9e3a-f8751f54979a" />
+<img width="360" height="800" alt="Media2" src="https://github.com/user-attachments/assets/87792479-151d-45be-901d-cfde25e8fba4" />
+<img width="360" height="800" alt="Media3" src="https://github.com/user-attachments/assets/dfe62a9d-47e1-40e8-9bcf-15673ae1140d" />
+<img width="360" height="800" alt="Media4" src="https://github.com/user-attachments/assets/408ff7a8-6131-4977-bb54-84886b4a3331" />
+<img width="360" height="800" alt="Media5" src="https://github.com/user-attachments/assets/c5bc9586-3c60-482a-9e02-8c4db97292ad" />
+<img width="360" height="800" alt="Media6" src="https://github.com/user-attachments/assets/aad679a5-c1a3-4153-84d8-87d7a873a0a3" />
+<img width="360" height="800" alt="Media7" src="https://github.com/user-attachments/assets/37c9164f-716b-4a0e-bc51-11fd55d58d5c" />
+<img width="360" height="800" alt="Media8" src="https://github.com/user-attachments/assets/e14ec2f7-6ed5-4837-9e3a-f8751f54979a" />
 
 ---
 
 ## Features
 
-### 1. Onboarding with eKYC mock
-- **Path A — MyKad scan (default):** tap an animated SVG MyKad card → 2-second scan animation → confirmation screen pre-fills name, age, gender, state, and religion (hard-coded to the Aminah persona for the demo).
-- **Path B — manual fallback:** "Isi sendiri tanpa MyKad" link routes through 5 single-question screens.
-- Both paths converge on household size → number of children under 18 → monthly income (5 buckets) → saved to `localStorage`.
-- Why these fields: gender unlocks BIB maternal aid, religion unlocks 4 zakat aids, number of children drives STR + BKM tier amounts. Some fields (eKasih registration, STR recipient status, employment type) are deliberately **left as defaults** so aids surface as `partial` with a "1-step away" CTA — the demo's wow moment.
-
-### 2. AI-powered aid matching
+### 1. AI-powered aid matching
 - Sends user profile + slimmed aid catalog to **Google Gemini** (`gemini-flash-lite-latest`) for contextual matching.
 - Returns three buckets:
   - **`✓ Layak`** — eligible right now, can apply.
@@ -75,32 +69,32 @@ That's the entire pitch. Everything below explains how it works.
 - **Deterministic offline fallback** — if Gemini errors (network, quota, malformed JSON), a rule-based matcher produces the same output shape so the demo never goes blank.
 - Result cached in `localStorage["aida.match"]` — second load is instant.
 
-### 3. Catalog browse (`/aids`)
+### 2. Catalog browse (`/aids`)
 - Full searchable catalog of 15 aids with category chip filters (Tunai / Baucar / Zakat / Insurans / Welfare).
 - **Only screen that hits the database** — Server Component reads from AWS RDS PostgreSQL via Prisma. Falls back to local JSON if the database is unset or unreachable. Demonstrates a real cross-cloud query path without putting the AI hot path at risk.
 
-### 4. Aid detail page
+### 3. Aid detail page
 - Provider logo + program name, amount hero card, "Mengapa anda layak" / "Apa yang kurang" reasoning, tier breakdown, eligibility criteria, required documents, application steps, offline options.
 - Sticky bottom CTA adapts to status: "Mohon Sekarang" (eligible) / "Daftar dahulu" (partial) / "Lihat butiran" (auto-credited).
 
-### 5. Insights tab — Touch 'n Go wallet narrative
+### 4. Insights tab
 - Mocked TnG eWallet card with balance derived from matched aid amounts.
 - AI advice cards (win / tip / warn tones) — hard-coded for the demo, no LLM call.
 - Static stacked-bar spending breakdown (groceries / utilities / transport / health / other).
 - **All mocked** — page footer says so. The intent is to show the Touch 'n Go ecosystem story, not transact.
 
-### 6. AIDa chatbot
+### 5. AIDa chatbot
 - WhatsApp-style bubbles with quick-reply chip suggestions.
 - Multilingual (Bahasa Malaysia / English / 中文 / தமிழ்) — picks language from user profile.
 - System prompt frames AIDa as a warm Malaysian case worker, defaults to BM, caps replies at 2–4 sentences, demands plain language ("imagine explaining to someone's grandmother").
 - Has access to the user's full profile + matched aid objects, so it quotes application steps and amounts directly from the catalog.
 - Friendly multilingual fallback if Gemini is unreachable — no `[API error]` developer tags ever reach the user.
 
-### 7. Profile management
+### 6. Profile management
 - Demographic summary, language switcher, settings list.
 - Destructive "Padam profil & mula semula" with `confirm()` dialog clears localStorage and routes back to onboarding.
 
-### 8. PWA install
+### 7. PWA install
 - Installable to home screen via `public/manifest.json`.
 - Standalone display mode (no browser chrome), blue theme color (`#2563eb`).
 - Custom app icons (192px, 512px).
@@ -188,25 +182,6 @@ Pre-written gap messages, fix URLs, and estimated turnaround days for the 5 comm
 
 ---
 
-## Aid catalog (15 programs)
-
-| Category | Programs |
-|---|---|
-| Federal cash | STR (Sumbangan Tunai Rahmah), e-Tunai Belia |
-| Federal in-kind | SARA, SARA Untuk Semua |
-| Federal insurance | MySalam |
-| Federal welfare | Bantuan Ihsan Bayi (BIB), Bantuan Kanak-kanak (BKM), Penjaga OKU |
-| Retiree | BPEN |
-| Registration gate | eKasih *(prerequisite-only — never surfaced as an aid, only as a gap inside others)* |
-| State zakat | LZS BSH, LZS Pendidikan (Selangor), MAIWP (KL/Putrajaya/Labuan), TBS (Sarawak) |
-| State cash | Bantuan Bingkas (Selangor) |
-
-Catalog source: BA team's research drop in [`research/`](research/) (`AREA67_AIDa_BA1_Catalog.docx` is the authoritative reference). Live catalog: [`src/data/aids.json`](src/data/aids.json).
-
-**Persona calibration target:** Aminah (58F, Selangor, Muslim, RM1,800/mo, 1 school child) returns **9 matched + 5 near-miss**.
-
----
-
 ## Tech stack
 
 | Layer | Technology |
@@ -222,8 +197,6 @@ Catalog source: BA team's research drop in [`research/`](research/) (`AREA67_AID
 | Hosting | **Alibaba Cloud SWAS** (primary) + **AWS Amplify** (backup) |
 | Storage | **Alibaba Cloud OSS** (static assets, public-read) |
 | DB hosting | **AWS RDS** (cross-cloud) |
-
-**Why `flash-lite`:** the regular Flash 2.5 model spends hidden reasoning tokens on every turn. Lite skips that — roughly 2× faster on our lookup-and-rephrase workload, with no quality loss for this use case.
 
 ---
 
@@ -345,6 +318,9 @@ Private project, hackathon submission. Not for redistribution.
 
 ## Credits
 
-- **Engineering & UX:** Area 67 team
-- **Aid catalog research:** BA1 team (see `research/AREA67_AIDa_BA1_Catalog.docx`)
-- **Persona:** Mak Cik Aminah, 58, Klang, Selangor (composite based on real B40 demographics)
+- **Awi**
+- **Anis**
+- **Amni**
+- **Shaiful**
+- **Azim**
+- **Special Mention** THE HAMAKS
