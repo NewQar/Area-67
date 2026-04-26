@@ -105,6 +105,25 @@ ${JSON.stringify(GAP_TEMPLATES)}
 
 Respond ONLY with valid JSON. No markdown, no commentary.`;
 
+// Gemini Lite occasionally returns 503 ("high demand") during peak hours.
+// Retry up to twice with short backoff before bubbling up to the caller's
+// fallback path. Only retries on transient upstream signals.
+async function withGeminiRetry<T>(fn: () => Promise<T>, label: string): Promise<T> {
+  const delays = [500, 1500];
+  for (let attempt = 0; attempt <= delays.length; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      const transient = /\b503\b|Service Unavailable|overloaded|high demand/i.test(msg);
+      if (!transient || attempt === delays.length) throw err;
+      console.warn(`[gemini] ${label} 503, retrying in ${delays[attempt]}ms (attempt ${attempt + 1})`);
+      await new Promise((r) => setTimeout(r, delays[attempt]));
+    }
+  }
+  throw new Error('unreachable');
+}
+
 // Trimmed aid shape sent to Gemini — drops UI-only fields (multilingual
 // names, amounts, required_documents, application steps, source URLs) so the
 // prompt shrinks ~4×. Matching only needs the eligibility signals; the
@@ -143,7 +162,7 @@ User profile: ${JSON.stringify(profile)}
 Available aids: ${JSON.stringify(slim)}`;
 
   try {
-    const result = await model.generateContent(prompt);
+    const result = await withGeminiRetry(() => model.generateContent(prompt), 'match');
     const text = result.response.text();
     const parsed = JSON.parse(text) as MatchResult;
     return normalizeResult(parsed);
@@ -193,7 +212,7 @@ export async function chatWithAida(
     parts: [{ text: m.content }],
   }));
 
-  const result = await model.generateContent({ contents });
+  const result = await withGeminiRetry(() => model.generateContent({ contents }), 'chat');
   const candidate = result.response.candidates?.[0];
   const finish = candidate?.finishReason;
   const text = result.response.text().trim();
